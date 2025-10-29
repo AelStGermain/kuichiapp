@@ -1,0 +1,7 @@
+{
+  "name": "kuichi",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
