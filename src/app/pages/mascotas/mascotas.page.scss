@@ -1,0 +1,30 @@
+:root {
+  --kuichi-muted: #6b7280;
+}
+
+ion-avatar img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.muted {
+  color: var(--kuichi-muted);
+  font-size: 13px;
+}
+
+.notes {
+  color: rgba(0,0,0,0.65);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* form spacing */
+.form-actions { margin-top: 12px; }
+
+/* responsive tweaks */
+@media (max-width: 420px) {
+  ion-avatar img { width: 48px; height: 48px; }
+  .notes { font-size: 12px; }
+}

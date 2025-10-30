@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="success">
+    <ion-buttons slot="start">
+      <!-- Volver a Home -->
+      <ion-button routerLink="/" title="Inicio">
+        <ion-icon slot="start" name="home-outline"></ion-icon>
+        <span class="toolbar-label">Inicio</span>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Mascotas</ion-title>
+
+    <!-- Navegación visible sólo si está autenticado -->
+    <ion-buttons slot="end" *ngIf="isAuth">
+      <ion-button routerLink="/ofertas" title="Ofertas">
+        <ion-icon slot="icon-only" name="pricetags-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button routerLink="/mascotas" title="Mascotas">
+        <ion-icon slot="icon-only" name="paw-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="logout()" title="Cerrar sesión">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ editingId ? 'Editar Mascota' : 'Registrar Mascota' }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input [(ngModel)]="form.nombre" placeholder="Ej: Luna"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Especie</ion-label>
+        <ion-input [(ngModel)]="form.especie" placeholder="Ej: Perro"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Edad</ion-label>
+        <ion-input [(ngModel)]="form.edad" type="text" placeholder="Ej: 3 años"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Notas</ion-label>
+        <ion-textarea [(ngModel)]="form.notas" placeholder="Vacunas, observaciones..."></ion-textarea>
+      </ion-item>
+
+      <div class="form-actions">
+        <ion-button expand="block" color="primary" (click)="addOrUpdate()">
+          {{ editingId ? 'Guardar cambios' : 'Agregar mascota' }}
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list id="mascotas-list">
+    <ion-item *ngFor="let m of mascotas; let i = index">
+      <ion-avatar slot="start">
+        <img src="/assets/profile-icon.png" alt="avatar" />
+      </ion-avatar>
+
+      <ion-label>
+        <h2 class="capitalize">{{ m.nombre }}</h2>
+        <p class="muted">{{ m.especie }} • {{ m.edad || 'edad no indicada' }}</p>
+        <p class="notes">{{ m.notas }}</p>
+      </ion-label>
+
+      <!-- Botones siempre visibles y accesibles -->
+      <ion-buttons slot="end">
+        <ion-button color="medium" fill="clear" (click)="edit(m)" title="Editar">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" fill="clear" (click)="remove(m.id)" title="Eliminar">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+
+    <ion-item *ngIf="mascotas.length === 0">
+      <ion-label>No hay mascotas registradas. Usa el formulario para agregar una.</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

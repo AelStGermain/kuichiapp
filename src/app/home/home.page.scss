@@ -1,27 +1,132 @@
-#container {
-  text-align: center;
+/* variables */
+:root {
+  --kuichi-primary: #0f9d9a;
+  --kuichi-accent: #ff6b6b;
+  --kuichi-bg: #f7fbfb;
+}
 
+/* Hero as background banner */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 260px; /* altura base en móvil */
+  display: flex;
+  align-items: center;
+  color: #fff;
+  overflow: hidden;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+
+/* reemplaza la declaración background-image existente por esta */
+background-image:
+  linear-gradient(rgba(3, 15, 12, 0.45), rgba(3, 15, 12, 0.45)),
+  url("/assets/images/hero-dog.png"),
+  url("/assets/hero-dog.jpg");
+
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* inner wrapper to control padding independent of background */
+.hero-inner {
+  width: 100%;
+  z-index: 2;
+}
+
+/* ensure contrast and readable text */
+.hero-text h1 {
+  margin: 0 0 6px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+
+.lead {
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 12px;
+  max-width: 520px;
+}
+
+/* hero buttons */
+.hero-actions ion-button + ion-button {
+  margin-left: 10px;
+}
+
+/* Larger screens: taller banner and bigger text */
+@media (min-width: 768px) {
+  .hero {
+    min-height: 380px;
+  }
+  .hero-text h1 {
+    font-size: 40px;
+  }
+  .lead {
+    font-size: 18px;
+  }
+}
+
+/* very small screens: constrain text and spacing */
+@media (max-width: 420px) {
+  .hero {
+    min-height: 220px;
+  }
+  .hero-text h1 {
+    font-size: 20px;
+  }
+  .lead {
+    font-size: 14px;
+  }
+}
+
+/* fallback overlay if browser ignores gradient in background-image */
+.hero::after {
+  content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  inset: 0;
+  background: linear-gradient(180deg, rgba(3,15,12,0.28), rgba(3,15,12,0.52));
+  z-index: 1;
+  pointer-events: none;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+/* ensure inner content sits above overlay */
+.hero-inner { position: relative; z-index: 3; }
+
+/* keep other components spacing clean */
+ion-card { margin-bottom: 14px; border-radius: 10px; }
+
+/* small utility to avoid hero text spanning full width in very large screens */
+@media (min-width: 1200px) {
+  .hero-inner { max-width: 1100px; margin: 0 auto; }
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
 
-  color: #8c8c8c;
-
-  margin: 0;
+/* Iconos en feature cards: tamaño consistente y centrado */
+.feature-card img {
+  width: 56px;         /* tamaño deseado: ajustar aquí */
+  height: 56px;        /* mantiene aspecto cuadrado */
+  min-width: 56px;     /* evita que el layout colapse en grid */
+  object-fit: contain; /* mantiene proporciones */
+  margin-right: 12px;  /* separación con el texto */
+  display: inline-block;
+  vertical-align: middle;
 }
 
-#container a {
-  text-decoration: none;
+/* Para que el contenido (texto) se alinee verticalmente al centro */
+.feature-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+
+/* En pantallas pequeñas reduce el tamaño para adaptar */
+@media (max-width: 420px) {
+  .feature-card img {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    margin-right: 10px;
+  }
 }

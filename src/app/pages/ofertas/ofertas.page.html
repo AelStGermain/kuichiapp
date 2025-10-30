@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-title>Ofertas Veterinarias 🐾</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Lista de ofertas -->
+  <ion-card *ngFor="let oferta of ofertas">
+    <ion-card-header>
+      <ion-card-title>{{ oferta.titulo }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{ oferta.descripcion }}</p>
+      <ion-button fill="clear" color="danger" size="small" (click)="eliminarOferta(oferta)">
+        Eliminar
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Formulario para agregar oferta -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Agregar nueva oferta</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">Título</ion-label>
+        <ion-input [(ngModel)]="nuevaOferta.titulo" name="titulo" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Descripción</ion-label>
+        <ion-input [(ngModel)]="nuevaOferta.descripcion" name="descripcion" required></ion-input>
+      </ion-item>
+      <ion-button expand="block" color="primary" class="ion-margin-top" (click)="agregarOferta()">
+        Guardar Oferta
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

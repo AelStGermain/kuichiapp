@@ -1,0 +1,13 @@
+ion-toolbar[role="toolbar"] {
+  --ion-safe-area-top: 0px;
+}
+
+/* icon label visible en pantallas grandes si quisieras mostrar texto */
+@media (min-width: 768px) {
+  ion-button[title]::after {
+    content: attr(title);
+    font-size: 12px;
+    margin-left: 6px;
+    color: white;
+  }
+}
