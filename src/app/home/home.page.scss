@@ -1,132 +1,243 @@
-/* variables */
 :root {
-  --kuichi-primary: #0f9d9a;
-  --kuichi-accent: #ff6b6b;
-  --kuichi-bg: #f7fbfb;
+  --kuichi-primary: #3880ff;
+  --kuichi-success: #2dd36f;
+  --kuichi-warning: #ffc409;
+  --kuichi-danger: #eb445a;
+  --kuichi-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-/* Hero as background banner */
-.hero {
+.home-content {
+  --background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title-icon {
+  font-size: 24px;
+}
+
+.navbar-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  max-width: 150px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* HERO SECTION */
+.hero-section {
   position: relative;
-  width: 100%;
-  min-height: 260px; /* altura base en móvil */
-  display: flex;
-  align-items: center;
-  color: #fff;
+  height: 280px;
   overflow: hidden;
-  border-bottom-left-radius: 14px;
-  border-bottom-right-radius: 14px;
-
-/* reemplaza la declaración background-image existente por esta */
-background-image:
-  linear-gradient(rgba(3, 15, 12, 0.45), rgba(3, 15, 12, 0.45)),
-  url("/assets/images/hero-dog.png"),
-  url("/assets/hero-dog.jpg");
-
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-/* inner wrapper to control padding independent of background */
-.hero-inner {
-  width: 100%;
-  z-index: 2;
-}
-
-/* ensure contrast and readable text */
-.hero-text h1 {
-  margin: 0 0 6px 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.35);
-}
-
-.lead {
-  color: rgba(255,255,255,0.92);
-  margin-bottom: 12px;
-  max-width: 520px;
-}
-
-/* hero buttons */
-.hero-actions ion-button + ion-button {
-  margin-left: 10px;
-}
-
-/* Larger screens: taller banner and bigger text */
-@media (min-width: 768px) {
-  .hero {
-    min-height: 380px;
-  }
-  .hero-text h1 {
-    font-size: 40px;
-  }
-  .lead {
-    font-size: 18px;
-  }
-}
-
-/* very small screens: constrain text and spacing */
-@media (max-width: 420px) {
-  .hero {
-    min-height: 220px;
-  }
-  .hero-text h1 {
-    font-size: 20px;
-  }
-  .lead {
-    font-size: 14px;
-  }
-}
-
-/* fallback overlay if browser ignores gradient in background-image */
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(3,15,12,0.28), rgba(3,15,12,0.52));
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* ensure inner content sits above overlay */
-.hero-inner { position: relative; z-index: 3; }
-
-/* keep other components spacing clean */
-ion-card { margin-bottom: 14px; border-radius: 10px; }
-
-/* small utility to avoid hero text spanning full width in very large screens */
-@media (min-width: 1200px) {
-  .hero-inner { max-width: 1100px; margin: 0 auto; }
-}
-
-
-/* Iconos en feature cards: tamaño consistente y centrado */
-.feature-card img {
-  width: 56px;         /* tamaño deseado: ajustar aquí */
-  height: 56px;        /* mantiene aspecto cuadrado */
-  min-width: 56px;     /* evita que el layout colapse en grid */
-  object-fit: contain; /* mantiene proporciones */
-  margin-right: 12px;  /* separación con el texto */
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* Para que el contenido (texto) se alinee verticalmente al centro */
-.feature-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  justify-content: center;
 }
 
-/* En pantallas pequeñas reduce el tamaño para adaptar */
-@media (max-width: 420px) {
-  .feature-card img {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    margin-right: 10px;
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(56, 128, 255, 0.8), rgba(45, 211, 111, 0.6));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+}
+
+.welcome-text h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.welcome-text p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.hero-logo {
+  margin-bottom: 16px;
+}
+
+.hero-logo-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+/* FEATURES PREVIEW */
+.features-preview {
+  background: white;
+  margin-top: -20px;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+
+.features-preview h2 {
+  text-align: center;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 20px 10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.feature-card ion-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.feature-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 8px 0 4px 0;
+  color: #1a1a1a;
+}
+
+.feature-card p {
+  font-size: 0.85rem;
+  color: #666666;
+  margin: 0;
+}
+
+/* LOGIN SECTION */
+.login-section {
+  background: white;
+}
+
+.login-card {
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.login-card ion-card-header {
+  background: var(--kuichi-gradient);
+  color: white;
+  padding: 20px;
+}
+
+.login-card ion-card-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.input-item {
+  margin-bottom: 16px;
+  --border-radius: 12px;
+  --background: #f8f9fa;
+}
+
+.login-button {
+  margin-top: 20px;
+  --border-radius: 12px;
+  height: 48px;
+  font-weight: 600;
+}
+
+.demo-info {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.demo-info ion-chip {
+  --background: rgba(56, 128, 255, 0.15);
+  --color: #2563eb;
+  border: 1px solid rgba(56, 128, 255, 0.3);
+}
+
+/* QUICK ACCESS */
+.quick-access {
+  background: white;
+  padding-top: 0;
+}
+
+.quick-access h3 {
+  text-align: center;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .welcome-text h1 {
+    font-size: 1.8rem;
+  }
+  
+  .welcome-text p {
+    font-size: 1rem;
+  }
+  
+  .hero-section {
+    height: 240px;
+  }
+  
+  .feature-card {
+    padding: 16px 8px;
+  }
+  
+  .feature-card ion-icon {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-text h1 {
+    font-size: 1.6rem;
+  }
+  
+  .hero-section {
+    height: 200px;
+  }
+  
+  .features-preview {
+    margin-top: -15px;
   }
 }

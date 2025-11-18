@@ -1,40 +1,147 @@
-<ion-header>
-  <ion-toolbar color="tertiary">
-    <ion-title>Ofertas Veterinarias 🐾</ion-title>
+<ion-header [translucent]="true">
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/" fill="clear">
+        <ion-icon name="home" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      <img src="/assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button routerLink="/mascotas" fill="clear">
+        <ion-icon name="paw" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="logout()" fill="clear">
+        <ion-icon name="log-out" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <!-- Lista de ofertas -->
-  <ion-card *ngFor="let oferta of ofertas">
-    <ion-card-header>
-      <ion-card-title>{{ oferta.titulo }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p>{{ oferta.descripcion }}</p>
-      <ion-button fill="clear" color="danger" size="small" (click)="eliminarOferta(oferta)">
-        Eliminar
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
+<ion-content [fullscreen]="true" class="ofertas-content">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-background">
+      <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&h=400&fit=crop&crop=center" alt="Ofertas veterinarias" class="hero-image">
+      <div class="hero-overlay"></div>
+    </div>
+    
+    <div class="hero-content ion-padding">
+      <h1>🎉 Ofertas Exclusivas</h1>
+      <p>Los mejores descuentos para el cuidado de tu mascota</p>
+    </div>
+  </div>
 
-  <!-- Formulario para agregar oferta -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Agregar nueva oferta</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-label position="floating">Título</ion-label>
-        <ion-input [(ngModel)]="nuevaOferta.titulo" name="titulo" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Descripción</ion-label>
-        <ion-input [(ngModel)]="nuevaOferta.descripcion" name="descripcion" required></ion-input>
-      </ion-item>
-      <ion-button expand="block" color="primary" class="ion-margin-top" (click)="agregarOferta()">
-        Guardar Oferta
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
+  <!-- Ofertas Grid -->
+  <div class="ofertas-section ion-padding">
+    <div class="section-header" *ngIf="ofertas.length > 0">
+      <h2>
+        <ion-icon name="gift" color="warning"></ion-icon>
+        Ofertas Disponibles ({{ ofertas.length }})
+      </h2>
+    </div>
+
+    <div class="ofertas-grid">
+      <ion-card *ngFor="let oferta of ofertas; let i = index" class="oferta-card">
+        <div class="oferta-header">
+          <div class="oferta-badge">
+            <ion-icon name="flash"></ion-icon>
+            OFERTA
+          </div>
+          <ion-button 
+            fill="clear" 
+            color="danger" 
+            size="small"
+            (click)="confirmarEliminar(oferta)">
+            <ion-icon name="trash" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+        
+        <ion-card-content>
+          <div class="oferta-icon">
+            <img [src]="getOfertaIcon(i)" [alt]="oferta.titulo" />
+          </div>
+          
+          <h3 class="oferta-titulo">{{ oferta.titulo }}</h3>
+          <p class="oferta-descripcion">{{ oferta.descripcion }}</p>
+          
+          <div class="oferta-actions">
+            <ion-button expand="block" color="warning" fill="outline">
+              <ion-icon name="call" slot="start"></ion-icon>
+              Contactar
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="ofertas.length === 0">
+      <div class="empty-content">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop&crop=center" alt="Sin ofertas" class="empty-image">
+        <h3>¡No hay ofertas disponibles!</h3>
+        <p>Agrega nuevas ofertas para tus clientes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Offer Section -->
+  <div class="add-offer-section ion-padding">
+    <ion-card class="add-offer-card">
+      <ion-card-header class="add-offer-header">
+        <ion-card-title>
+          <ion-icon name="add-circle" color="warning"></ion-icon>
+          Nueva Oferta
+        </ion-card-title>
+        <ion-card-subtitle>Comparte descuentos y promociones especiales</ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="input-group">
+          <ion-item lines="none" class="modern-input">
+            <ion-icon name="pricetag" slot="start" color="warning"></ion-icon>
+            <ion-input 
+              [(ngModel)]="nuevaOferta.titulo" 
+              placeholder="Ej: 20% descuento en vacunas"
+              fill="outline"
+              label="Título de la oferta"
+              labelPlacement="floating">
+            </ion-input>
+          </ion-item>
+
+          <ion-item lines="none" class="modern-input">
+            <ion-icon name="document-text" slot="start" color="medium"></ion-icon>
+            <ion-textarea 
+              [(ngModel)]="nuevaOferta.descripcion" 
+              placeholder="Describe los detalles de la oferta..."
+              fill="outline"
+              label="Descripción"
+              labelPlacement="floating"
+              rows="3">
+            </ion-textarea>
+          </ion-item>
+        </div>
+
+        <ion-button 
+          expand="block" 
+          color="warning" 
+          (click)="agregarOferta()"
+          [disabled]="!nuevaOferta.titulo || !nuevaOferta.descripcion"
+          class="add-button">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Publicar Oferta
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="warning" (click)="scrollToForm()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

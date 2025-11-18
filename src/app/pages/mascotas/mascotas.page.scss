@@ -1,30 +1,399 @@
 :root {
   --kuichi-muted: #6b7280;
+  --kuichi-primary: #3880ff;
+  --kuichi-success: #2dd36f;
+  --kuichi-warning: #ffc409;
+  --kuichi-danger: #eb445a;
 }
 
-ion-avatar img {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 8px;
+.mascotas-content {
+  --background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
-.muted {
-  color: var(--kuichi-muted);
-  font-size: 13px;
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.notes {
-  color: rgba(0,0,0,0.65);
-  font-size: 13px;
-  margin-top: 6px;
+.title-icon {
+  font-size: 20px;
 }
 
-/* form spacing */
-.form-actions { margin-top: 12px; }
+.navbar-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  max-width: 150px;
+  display: block;
+  margin: 0 auto;
+}
 
-/* responsive tweaks */
-@media (max-width: 420px) {
-  ion-avatar img { width: 48px; height: 48px; }
-  .notes { font-size: 12px; }
+/* FORM STYLES */
+.form-card {
+  margin: 16px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.form-header {
+  background: linear-gradient(135deg, var(--kuichi-primary), #667eea);
+  color: white;
+  position: relative;
+  padding: 20px;
+}
+
+.form-header ion-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.form-icon {
+  font-size: 24px;
+}
+
+.close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.form-content {
+  padding: 24px;
+}
+
+.input-group {
+  margin-bottom: 24px;
+}
+
+.modern-input {
+  margin-bottom: 16px;
+  --border-radius: 12px;
+  --background: transparent;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1a1a1a;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* CAMERA SECTION */
+.camera-section {
+  margin: 24px 0;
+  padding: 20px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.camera-controls {
+  margin-bottom: 16px;
+}
+
+.camera-button {
+  --border-radius: 12px;
+  height: 48px;
+}
+
+.photo-preview {
+  position: relative;
+  text-align: center;
+  
+  img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  
+  .remove-photo {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+  }
+}
+
+/* FORM ACTIONS */
+.form-actions {
+  margin-top: 24px;
+}
+
+.save-button {
+  --border-radius: 12px;
+  height: 48px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.cancel-button {
+  --border-radius: 12px;
+  height: 40px;
+}
+
+/* MASCOTAS SECTION */
+.mascotas-section {
+  padding: 16px;
+}
+
+.section-header {
+  margin-bottom: 20px;
+  
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1a1a1a;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+/* MASCOTAS GRID */
+.mascotas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.mascota-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 0;
+}
+
+.mascota-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.mascota-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .mascota-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+}
+
+.mascota-card:hover .mascota-actions {
+  opacity: 1;
+}
+
+.mascota-info {
+  padding: 16px;
+}
+
+.mascota-nombre {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+  text-transform: capitalize;
+}
+
+.mascota-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.detail-chip {
+  font-size: 0.8rem;
+  height: 28px;
+}
+
+.mascota-notas {
+  font-size: 0.9rem;
+  color: #555555;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-content {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.empty-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  opacity: 0.7;
+}
+
+.empty-content h3 {
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.empty-content p {
+  color: #666666;
+  margin-bottom: 24px;
+}
+
+/* VETERINARIAS SECTION */
+.veterinarias-section {
+  padding: 16px;
+}
+
+.veterinarias-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  margin: 0;
+}
+
+.vet-header {
+  background: linear-gradient(135deg, var(--kuichi-success), #20c997);
+  color: white;
+  padding: 20px;
+}
+
+.location-button {
+  --border-radius: 12px;
+  height: 48px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.location-info {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 20px;
+  
+  ion-spinner {
+    margin-bottom: 12px;
+  }
+  
+  p {
+    color: #666666;
+    margin: 0;
+  }
+}
+
+.veterinarias-list {
+  margin-top: 20px;
+}
+
+.vet-card {
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.vet-info {
+  padding: 0;
+}
+
+.vet-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  
+  h3 {
+    margin: 0;
+    color: #1a1a1a;
+    font-weight: 600;
+    flex: 1;
+  }
+}
+
+.distance-chip {
+  font-size: 0.8rem;
+  height: 24px;
+}
+
+.vet-address {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #666666;
+  font-size: 0.9rem;
+  margin: 8px 0 16px 0;
+}
+
+.vet-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* FAB */
+ion-fab-button {
+  --box-shadow: 0 8px 24px rgba(56, 128, 255, 0.3);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .mascotas-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-card {
+    margin: 8px;
+  }
+  
+  .mascota-image {
+    height: 180px;
+  }
+  
+  .vet-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .mascotas-section,
+  .veterinarias-section {
+    padding: 8px;
+  }
+  
+  .form-content {
+    padding: 16px;
+  }
+  
+  .mascota-image {
+    height: 160px;
+  }
+  
+  .empty-image {
+    width: 100px;
+    height: 100px;
+  }
 }

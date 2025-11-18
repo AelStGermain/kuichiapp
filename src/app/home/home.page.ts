@@ -1,41 +1,95 @@
-import { Component, Inject } from '@angular/core';
+// src/app/home/home.page.ts (Código MEJORADO)
+
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms'; 
+import { 
+  IonHeader, 
+  IonToolbar, 
+  IonTitle, 
+  IonContent, 
+  IonCard, 
+  IonCardHeader, 
+  IonCardTitle, 
+  IonCardContent, 
+  IonButton, 
+  IonIcon,
+  IonLabel,
+  IonChip,
+  IonGrid,
+  IonRow,
+  IonCol
+  // IonInput eliminado ya que no se usa en el HTML
+} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { IonicModule, ToastController } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { addIcons } from 'ionicons';
+import { logIn, mail, lockClosed, informationCircle, flash, person, camera, location, heart, pricetag, home, paw, logOut } from 'ionicons/icons'; // Añadidos home, paw, logOut
 
 @Component({
   selector: 'app-home',
+  templateUrl: 'home.page.html',
+  styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule, RouterModule],
-  templateUrl: './home.page.html',
-  styleUrls: ['./home.page.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonButton,
+    IonIcon,
+    IonLabel,
+    IonChip,
+    IonGrid,
+    IonRow,
+    IonCol
+    // IonInput eliminado de aquí también
+  ],
 })
 export class HomePage {
-  usuario = { email: '', password: '' };
-  redirectAfterLogin = '/mascotas';
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(
-    @Inject(AuthService) private auth: AuthService,
-    private router: Router,
-    private toast: ToastController
-  ) {}
+  // Modelo de usuario para login (aunque no se usa en este HTML, es bueno mantenerlo)
+  usuario = { email: '', password: '' }; 
 
+  constructor() {
+    // Es crucial que todos los iconos usados en toda la app estén cargados aquí.
+    addIcons({ 
+      logIn, mail, lockClosed, informationCircle, flash, person, 
+      camera, location, heart, pricetag, 
+      // Iconos usados en app.component.html:
+      home, paw, logOut 
+    });
+  }
+
+  get isLoggedIn(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
+  navigateTo(path: string) {
+    this.router.navigate([path]);
+  }
+  
   async login() {
-    if (!this.usuario.email || !this.usuario.password) {
-      const t = await this.toast.create({ message: 'Completa email y contraseña', duration: 1200, color: 'warning' });
-      await t.present();
-      return;
-    }
-    const ok = this.auth.login(this.usuario.email, this.usuario.password);
+    console.log('Intento de Login:', this.usuario);
+    const ok = await this.authService.login(this.usuario.email, this.usuario.password);
     if (ok) {
-      const url = this.router.parseUrl(this.router.url);
-      const redirect = url.queryParams['redirect'] || this.redirectAfterLogin;
-      await this.router.navigateByUrl(redirect);
+        this.router.navigate(['/mascotas']);
     } else {
-      const t = await this.toast.create({ message: 'Credenciales inválidas', duration: 1200, color: 'danger' });
-      await t.present();
+        // Manejo de error
     }
+  }
+
+  async quickLogin() {
+    this.usuario.email = 'Sincere@april.biz';
+    this.usuario.password = 'azerty'; 
+    await this.login();
   }
 }

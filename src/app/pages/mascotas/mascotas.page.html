@@ -1,91 +1,296 @@
-<ion-header>
-  <ion-toolbar color="success">
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <!-- Volver a Home -->
-      <ion-button routerLink="/" title="Inicio">
-        <ion-icon slot="start" name="home-outline"></ion-icon>
-        <span class="toolbar-label">Inicio</span>
+      <ion-button routerLink="/" fill="clear">
+        <ion-icon name="home" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
 
-    <ion-title>Mascotas</ion-title>
+    <ion-title>
+      <img src="/assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
+    </ion-title>
 
-    <!-- Navegación visible sólo si está autenticado -->
     <ion-buttons slot="end" *ngIf="isAuth">
-      <ion-button routerLink="/ofertas" title="Ofertas">
-        <ion-icon slot="icon-only" name="pricetags-outline"></ion-icon>
+      <ion-button routerLink="/ofertas" fill="clear">
+        <ion-icon name="pricetag" slot="icon-only"></ion-icon>
       </ion-button>
-
-      <ion-button routerLink="/mascotas" title="Mascotas">
-        <ion-icon slot="icon-only" name="paw-outline"></ion-icon>
-      </ion-button>
-
-      <ion-button (click)="logout()" title="Cerrar sesión">
-        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      <ion-button (click)="logout()" fill="clear">
+        <ion-icon name="log-out" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{ editingId ? 'Editar Mascota' : 'Registrar Mascota' }}</ion-card-title>
+<ion-content [fullscreen]="true" class="mascotas-content">
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!editingId">
+    <ion-fab-button color="primary" (click)="startCreate()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Form Card -->
+  <ion-card class="form-card" *ngIf="editingId !== null || showForm">
+    <ion-card-header class="form-header">
+      <ion-card-title>
+        <ion-icon [name]="editingId ? 'create' : 'add-circle'" class="form-icon"></ion-icon>
+        {{ editingId ? 'Editar Mascota' : 'Nueva Mascota' }}
+      </ion-card-title>
+      <ion-button 
+        fill="clear" 
+        color="medium" 
+        (click)="cancelForm()" 
+        class="close-button">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
     </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-label position="stacked">Nombre</ion-label>
-        <ion-input [(ngModel)]="form.nombre" placeholder="Ej: Luna"></ion-input>
-      </ion-item>
+    
+    <ion-card-content class="form-content">
+      <div class="input-group">
+        <ion-item lines="none" class="modern-input">
+          <ion-icon name="paw" slot="start" color="primary"></ion-icon>
+          <ion-input 
+            [(ngModel)]="form.nombre" 
+            placeholder="Nombre de tu mascota"
+            fill="outline"
+            label="Nombre"
+            labelPlacement="floating">
+          </ion-input>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Especie</ion-label>
-        <ion-input [(ngModel)]="form.especie" placeholder="Ej: Perro"></ion-input>
-      </ion-item>
+        <ion-item lines="none" class="modern-input">
+          <ion-icon name="fish" slot="start" color="success"></ion-icon>
+          <ion-input 
+            [(ngModel)]="form.especie" 
+            placeholder="Perro, Gato, etc."
+            fill="outline"
+            label="Especie"
+            labelPlacement="floating">
+          </ion-input>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Edad</ion-label>
-        <ion-input [(ngModel)]="form.edad" type="text" placeholder="Ej: 3 años"></ion-input>
-      </ion-item>
+        <ion-item lines="none" class="modern-input">
+          <ion-icon name="time" slot="start" color="warning"></ion-icon>
+          <ion-input 
+            [(ngModel)]="form.edad" 
+            placeholder="3 años, 6 meses, etc."
+            fill="outline"
+            label="Edad"
+            labelPlacement="floating">
+          </ion-input>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Notas</ion-label>
-        <ion-textarea [(ngModel)]="form.notas" placeholder="Vacunas, observaciones..."></ion-textarea>
-      </ion-item>
+        <ion-item lines="none" class="modern-input">
+          <ion-icon name="document-text" slot="start" color="medium"></ion-icon>
+          <ion-textarea 
+            [(ngModel)]="form.notas" 
+            placeholder="Vacunas, cuidados especiales, etc."
+            fill="outline"
+            label="Notas"
+            labelPlacement="floating"
+            rows="3">
+          </ion-textarea>
+        </ion-item>
+      </div>
 
+      <!-- CÁMARA SECTION -->
+      <div class="camera-section">
+        <h4 class="section-title">
+          <ion-icon name="camera" color="secondary"></ion-icon>
+          Foto de la Mascota
+        </h4>
+        
+        <div class="camera-controls">
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            color="secondary" 
+            (click)="mostrarOpcionesFoto()"
+            class="camera-button">
+            <ion-icon name="camera" slot="start"></ion-icon>
+            {{ fotoCapturada ? 'Cambiar Foto' : 'Agregar Foto' }}
+          </ion-button>
+        </div>
+        
+        <div *ngIf="fotoCapturada" class="photo-preview">
+          <img [src]="fotoCapturada" alt="Foto de la mascota" />
+          <ion-button 
+            fill="clear" 
+            color="danger" 
+            size="small" 
+            (click)="eliminarFoto()"
+            class="remove-photo">
+            <ion-icon name="trash" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- FORM ACTIONS -->
       <div class="form-actions">
-        <ion-button expand="block" color="primary" (click)="addOrUpdate()">
-          {{ editingId ? 'Guardar cambios' : 'Agregar mascota' }}
+        <ion-button 
+          expand="block" 
+          color="primary" 
+          (click)="addOrUpdate()"
+          [disabled]="!form.nombre || !form.especie"
+          class="save-button">
+          <ion-icon [name]="editingId ? 'checkmark' : 'add'" slot="start"></ion-icon>
+          {{ editingId ? 'Guardar Cambios' : 'Agregar Mascota' }}
+        </ion-button>
+        
+        <ion-button 
+          expand="block" 
+          fill="clear" 
+          color="medium" 
+          (click)="cancelForm()"
+          class="cancel-button">
+          Cancelar
         </ion-button>
       </div>
     </ion-card-content>
   </ion-card>
 
-  <ion-list id="mascotas-list">
-    <ion-item *ngFor="let m of mascotas; let i = index">
-      <ion-avatar slot="start">
-        <img src="/assets/profile-icon.png" alt="avatar" />
-      </ion-avatar>
+  <!-- Lista de Mascotas -->
+  <div class="mascotas-section" id="mascotas-list">
+    <div class="section-header" *ngIf="mascotas.length > 0">
+      <h2>
+        <ion-icon name="heart" color="danger"></ion-icon>
+        Tus Mascotas ({{ mascotas.length }})
+      </h2>
+    </div>
 
-      <ion-label>
-        <h2 class="capitalize">{{ m.nombre }}</h2>
-        <p class="muted">{{ m.especie }} • {{ m.edad || 'edad no indicada' }}</p>
-        <p class="notes">{{ m.notas }}</p>
-      </ion-label>
+    <div class="mascotas-grid">
+      <ion-card *ngFor="let m of mascotas" class="mascota-card">
+        <div class="mascota-image">
+          <img 
+            [src]="m.foto || 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=300&fit=crop&crop=center'" 
+            [alt]="m.nombre"
+            (error)="onImageError($event)" />
+          <div class="mascota-actions">
+            <ion-button 
+              fill="clear" 
+              color="light" 
+              size="small" 
+              (click)="edit(m)">
+              <ion-icon name="create" slot="icon-only"></ion-icon>
+            </ion-button>
+            <ion-button 
+              fill="clear" 
+              color="light" 
+              size="small" 
+              (click)="confirmDelete(m)">
+              <ion-icon name="trash" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+        
+        <ion-card-content class="mascota-info">
+          <h3 class="mascota-nombre">{{ m.nombre }}</h3>
+          <div class="mascota-details">
+            <ion-chip color="primary" class="detail-chip">
+              <ion-icon name="paw"></ion-icon>
+              <ion-label>{{ m.especie }}</ion-label>
+            </ion-chip>
+            <ion-chip color="success" class="detail-chip" *ngIf="m.edad">
+              <ion-icon name="time"></ion-icon>
+              <ion-label>{{ m.edad }}</ion-label>
+            </ion-chip>
+          </div>
+          <p class="mascota-notas" *ngIf="m.notas">{{ m.notas }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
 
-      <!-- Botones siempre visibles y accesibles -->
-      <ion-buttons slot="end">
-        <ion-button color="medium" fill="clear" (click)="edit(m)" title="Editar">
-          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="mascotas.length === 0">
+      <div class="empty-content">
+        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&h=200&fit=crop&crop=center" alt="Sin mascotas" class="empty-image">
+        <h3>¡Aún no tienes mascotas!</h3>
+        <p>Comienza agregando tu primera mascota con el botón de abajo</p>
+        <ion-button color="primary" (click)="startCreate()">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Agregar Primera Mascota
         </ion-button>
-        <ion-button color="danger" fill="clear" (click)="remove(m.id)" title="Eliminar">
-          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
+      </div>
+    </div>
+  </div>
 
-    <ion-item *ngIf="mascotas.length === 0">
-      <ion-label>No hay mascotas registradas. Usa el formulario para agregar una.</ion-label>
-    </ion-item>
-  </ion-list>
+  <!-- SECCIÓN GPS Y VETERINARIAS -->
+  <!--
+  <div class="veterinarias-section">
+    <ion-card class="veterinarias-card">
+      <ion-card-header class="vet-header">
+        <ion-card-title>
+          <ion-icon name="location" color="success"></ion-icon>
+          Veterinarias Cercanas
+        </ion-card-title>
+        <ion-card-subtitle>Encuentra atención médica para tu mascota</ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <ion-button 
+          expand="block" 
+          color="success" 
+          (click)="obtenerUbicacion()" 
+          [disabled]="obteniendoUbicacion"
+          class="location-button">
+          <ion-icon name="location" slot="start"></ion-icon>
+          {{ obteniendoUbicacion ? 'Obteniendo ubicación...' : 'Buscar Veterinarias Cercanas' }}
+        </ion-button>
+
+        <div *ngIf="ubicacionActual" class="location-info">
+          <ion-chip color="success">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <ion-label>Ubicación obtenida</ion-label>
+          </ion-chip>
+        </div>
+
+        <div *ngIf="buscandoVeterinarias" class="loading-state">
+          <ion-spinner name="crescent" color="success"></ion-spinner>
+          <p>Buscando veterinarias cercanas...</p>
+        </div>
+
+        <div class="veterinarias-list" *ngIf="veterinarias.length > 0">
+          <ion-card *ngFor="let vet of veterinarias" class="vet-card">
+            <ion-card-content>
+              <div class="vet-info">
+                <div class="vet-header-info">
+                  <h3>{{ vet.nombre }}</h3>
+                  <ion-chip color="primary" class="distance-chip">
+                    <ion-label>{{ vet.distancia }} km</ion-label>
+                  </ion-chip>
+                </div>
+                
+                <p class="vet-address">
+                  <ion-icon name="location" color="medium"></ion-icon>
+                  {{ vet.direccion }}
+                </p>
+                
+                <div class="vet-actions">
+                  <ion-button 
+                    *ngIf="vet.telefono" 
+                    fill="outline" 
+                    color="success" 
+                    size="small"
+                    (click)="llamarVeterinaria(vet.telefono!)">
+                    <ion-icon name="call" slot="start"></ion-icon>
+                    Llamar
+                  </ion-button>
+                  
+                  <ion-button 
+                    fill="outline" 
+                    color="primary" 
+                    size="small"
+                    (click)="abrirEnMaps(vet)">
+                    <ion-icon name="map" slot="start"></ion-icon>
+                    Ver en Mapa
+                  </ion-button>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  -->
 </ion-content>

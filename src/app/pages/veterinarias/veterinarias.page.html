@@ -1,0 +1,52 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Veterinarias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="veterinarias-content">
+  <ion-header collapse="condense">
+    <ion-toolbar color="primary">
+      <ion-title size="large">Veterinarias</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div *ngIf="!veterinarias || veterinarias.length === 0" class="empty-state">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Cargando veterinarias...</p>
+  </div>
+
+  <ion-list *ngIf="veterinarias && veterinarias.length > 0" class="card-list">
+    <ion-card *ngFor="let vet of veterinarias" class="veterinaria-card">
+      <ion-card-header>
+        <ion-card-title>{{ vet.nombre }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-item">
+          <ion-icon name="location-outline" slot="start" color="medium"></ion-icon>
+          <ion-label>{{ vet.direccion }}</ion-label>
+        </div>
+        <div class="info-item">
+          <ion-icon name="call-outline" slot="start" color="medium"></ion-icon>
+          <ion-label>{{ vet.telefono }}</ion-label>
+        </div>
+        <div class="info-item">
+          <ion-icon name="time-outline" slot="start" color="medium"></ion-icon>
+          <ion-label>{{ vet.horario }}</ion-label>
+        </div>
+        <div class="specialties">
+          <ion-chip *ngFor="let especialidad of vet.especialidades" color="primary" outline="true">
+            <ion-label>{{ especialidad }}</ion-label>
+          </ion-chip>
+        </div>
+        <ion-button expand="block" fill="outline" [href]="'https://www.google.com/maps?q=' + vet.latitud + ',' + vet.longitud" target="_blank">
+          Ver en mapa
+          <ion-icon name="map-outline" slot="end"></ion-icon>
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

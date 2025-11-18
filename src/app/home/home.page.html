@@ -1,48 +1,93 @@
-<ion-header>
-  <ion-toolbar class="toolbar-primary">
-    <ion-title>Kuichi</ion-title>
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>
+      <img src="/assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="home-content">
-  <section class="hero app-hero-banner">
-    <div class="hero-inner ion-padding">
-      <ion-grid>
-        <ion-row class="ion-align-items-center">
-          <ion-col size="12" size-md="7">
-            <div class="hero-text">
-              <h1>Kuichi 🐾</h1>
-              <p class="lead">Registra tus mascotas, revisa ofertas y gestiona todo desde tu cuenta.</p>
-            </div>
-          </ion-col>
-          <ion-col size="12" size-md="5">
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>🔐 Iniciar sesión</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <form (submit)="$event.preventDefault(); login();">
-                  <ion-item>
-                    <ion-label position="floating">Email</ion-label>
-                    <ion-input [(ngModel)]="usuario.email" name="email" type="email"></ion-input>
-                  </ion-item>
-                  <ion-item>
-                    <ion-label position="floating">Contraseña</ion-label>
-                    <ion-input [(ngModel)]="usuario.password" name="password" type="password"></ion-input>
-                  </ion-item>
-                  <ion-button expand="block" color="primary" class="ion-margin-top" type="submit">Entrar</ion-button>
-                </form>
-              </ion-card-content>
-            </ion-card>
-
-            <ion-card>
-              <ion-card-content>
-                <p class="muted">¿Primera vez? Inicia sesión con cualquier correo y contraseña para probar (autenticación simulada).</p>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+<ion-content [fullscreen]="true" class="home-content">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-background">
+      <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&h=600&fit=crop&crop=center" alt="Mascotas felices" class="hero-image">
+      <div class="hero-overlay"></div>
     </div>
-  </section>
+    
+    <div class="hero-content ion-padding">
+      <div class="welcome-text">
+        <div class="hero-logo">
+          <img src="/assets/images/kuichi_logo.png" alt="Kuichi Logo" class="hero-logo-img">
+        </div>
+        <h1>¡Bienvenido a Kuichi! 🐾</h1>
+        <p>La app completa para el cuidado de tus mascotas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Preview: Only show if user is logged in -->
+  <div class="features-preview ion-padding" *ngIf="isLoggedIn">
+    <h2>¿Qué puedes hacer?</h2>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <div class="feature-card" (click)="navigateTo('/mascotas')">
+            <ion-icon name="camera" color="primary"></ion-icon>
+            <h3>Fotos</h3>
+            <p>Captura momentos especiales</p>
+          </div>
+        </ion-col>
+        <ion-col size="6">
+          <div class="feature-card" (click)="navigateTo('/veterinarias')">
+            <ion-icon name="location" color="success"></ion-icon>
+            <h3>Veterinarias</h3>
+            <p>Encuentra las más cercanas</p>
+          </div>
+        </ion-col>
+        <ion-col size="6">
+          <div class="feature-card" (click)="navigateTo('/mascotas')">
+            <ion-icon name="heart" color="danger"></ion-icon>
+            <h3>Cuidados</h3>
+            <p>Registra información médica</p>
+          </div>
+        </ion-col>
+        <ion-col size="6">
+          <div class="feature-card" (click)="navigateTo('/ofertas')">
+            <ion-icon name="pricetag" color="warning"></ion-icon>
+            <h3>Ofertas</h3>
+            <p>Descuentos exclusivos</p>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Login/Register Call to Action: Only show if user is NOT logged in -->
+  <div class="login-cta ion-padding" *ngIf="!isLoggedIn">
+    <ion-card class="cta-card">
+      <ion-card-header>
+        <ion-card-title class="text-center">
+          <ion-icon name="log-in" color="primary"></ion-icon>
+          Únete a la Comunidad
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="text-center">
+        <p>Para acceder a todas las funcionalidades, por favor, inicia sesión o regístrate.</p>
+        <ion-button 
+          expand="block" 
+          color="primary" 
+          class="login-button" 
+          (click)="navigateTo('/login')">
+          <ion-icon name="log-in" slot="start"></ion-icon>
+          Ir a Iniciar Sesión
+        </ion-button>
+        <div class="demo-info">
+          <ion-chip color="success">
+            <ion-icon name="person" color="light"></ion-icon>
+            <ion-label><strong>Usuario de prueba: Sincere@april.biz</strong></ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
