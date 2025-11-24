@@ -1,24 +1,21 @@
 import { Component, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
-  IonContent, 
-  IonCard, 
-  IonCardHeader, 
-  IonCardTitle, 
-  IonCardContent, 
-  IonItem, 
-  IonInput, 
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonItem,
+  IonInput,
   IonButton,
+  IonIcon,
   AlertController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { addIcons } from 'ionicons';
-import { logIn, mail, lockClosed, informationCircle, flash, person } from 'ionicons/icons';
+import { logIn, mail, lockClosed, informationCircle, flash, person, flashOutline, logInOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
@@ -32,13 +29,10 @@ import { logIn, mail, lockClosed, informationCircle, flash, person } from 'ionic
     IonToolbar,
     IonTitle,
     IonContent,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
     IonItem,
     IonInput,
     IonButton,
+    IonIcon,
   ],
 })
 export class LoginPage {
@@ -51,7 +45,7 @@ export class LoginPage {
   private redirectUrl: string | null = null;
 
   constructor() {
-    addIcons({ logIn, mail, lockClosed, informationCircle, flash, person });
+    addIcons({ logIn, mail, lockClosed, informationCircle, flash, person, flashOutline, logInOutline });
     this.activatedRoute.queryParamMap.subscribe(params => {
       this.redirectUrl = params.get('redirect');
     });
@@ -60,7 +54,7 @@ export class LoginPage {
   async login() {
     const success = await this.authService.login(this.usuario.email, this.usuario.password);
     if (success) {
-      this.router.navigateByUrl(this.redirectUrl || '/mascotas');
+      this.router.navigateByUrl(this.redirectUrl || '/tabs/home');
     } else {
       const alert = await this.alertController.create({
         header: 'Error de Acceso',

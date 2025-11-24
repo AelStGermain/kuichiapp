@@ -1,0 +1,109 @@
+.login-content {
+    --background: transparent;
+    background-image: url('/assets/images/login-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(102, 187, 106, 0.3) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.95) 100%);
+        z-index: 0;
+    }
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.login-header {
+    background: linear-gradient(135deg, #66BB6A 0%, #81C784 100%);
+    padding: 40px 30px;
+    text-align: center;
+    color: white;
+
+    h1 {
+        font-size: 36px;
+        margin: 0 0 10px 0;
+        font-weight: bold;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    p {
+        font-size: 16px;
+        margin: 0;
+        opacity: 0.95;
+    }
+}
+
+.login-form {
+    padding: 30px;
+
+    ion-item {
+        --background: rgba(255, 255, 255, 0.8);
+        --border-radius: 12px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    ion-button {
+        --background: linear-gradient(135deg, #66BB6A 0%, #81C784 100%);
+        --border-radius: 12px;
+        --box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+        margin-top: 20px;
+        height: 50px;
+        font-size: 17px;
+        font-weight: bold;
+    }
+}
+
+.quick-login-section {
+    text-align: center;
+    padding: 20px 30px 30px 30px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+    p {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    ion-button {
+        --background: transparent;
+        --color: #66BB6A;
+        --border-width: 2px;
+        --border-style: solid;
+        --border-color: #66BB6A;
+        --border-radius: 12px;
+        height: 45px;
+        font-weight: 600;
+
+        &:hover {
+            --background: rgba(102, 187, 106, 0.1);
+        }
+    }
+}

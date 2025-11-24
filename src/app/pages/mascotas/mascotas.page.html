@@ -36,59 +36,38 @@
         <ion-icon [name]="editingId ? 'create' : 'add-circle'" class="form-icon"></ion-icon>
         {{ editingId ? 'Editar Mascota' : 'Nueva Mascota' }}
       </ion-card-title>
-      <ion-button 
-        fill="clear" 
-        color="medium" 
-        (click)="cancelForm()" 
-        class="close-button">
+      <ion-button fill="clear" color="medium" (click)="cancelForm()" class="close-button">
         <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-card-header>
-    
+
     <ion-card-content class="form-content">
       <div class="input-group">
         <ion-item lines="none" class="modern-input">
           <ion-icon name="paw" slot="start" color="primary"></ion-icon>
-          <ion-input 
-            [(ngModel)]="form.nombre" 
-            placeholder="Nombre de tu mascota"
-            fill="outline"
-            label="Nombre"
+          <ion-input [(ngModel)]="form.nombre" placeholder="Nombre de tu mascota" fill="outline" label="Nombre"
             labelPlacement="floating">
           </ion-input>
         </ion-item>
 
         <ion-item lines="none" class="modern-input">
           <ion-icon name="fish" slot="start" color="success"></ion-icon>
-          <ion-input 
-            [(ngModel)]="form.especie" 
-            placeholder="Perro, Gato, etc."
-            fill="outline"
-            label="Especie"
+          <ion-input [(ngModel)]="form.especie" placeholder="Perro, Gato, etc." fill="outline" label="Especie"
             labelPlacement="floating">
           </ion-input>
         </ion-item>
 
         <ion-item lines="none" class="modern-input">
           <ion-icon name="time" slot="start" color="warning"></ion-icon>
-          <ion-input 
-            [(ngModel)]="form.edad" 
-            placeholder="3 años, 6 meses, etc."
-            fill="outline"
-            label="Edad"
+          <ion-input [(ngModel)]="form.edad" placeholder="3 años, 6 meses, etc." fill="outline" label="Edad"
             labelPlacement="floating">
           </ion-input>
         </ion-item>
 
         <ion-item lines="none" class="modern-input">
           <ion-icon name="document-text" slot="start" color="medium"></ion-icon>
-          <ion-textarea 
-            [(ngModel)]="form.notas" 
-            placeholder="Vacunas, cuidados especiales, etc."
-            fill="outline"
-            label="Notas"
-            labelPlacement="floating"
-            rows="3">
+          <ion-textarea [(ngModel)]="form.notas" placeholder="Vacunas, cuidados especiales, etc." fill="outline"
+            label="Notas" labelPlacement="floating" rows="3">
           </ion-textarea>
         </ion-item>
       </div>
@@ -99,27 +78,18 @@
           <ion-icon name="camera" color="secondary"></ion-icon>
           Foto de la Mascota
         </h4>
-        
+
         <div class="camera-controls">
-          <ion-button 
-            expand="block" 
-            fill="outline" 
-            color="secondary" 
-            (click)="mostrarOpcionesFoto()"
+          <ion-button expand="block" fill="outline" color="secondary" (click)="mostrarOpcionesFoto()"
             class="camera-button">
             <ion-icon name="camera" slot="start"></ion-icon>
             {{ fotoCapturada ? 'Cambiar Foto' : 'Agregar Foto' }}
           </ion-button>
         </div>
-        
+
         <div *ngIf="fotoCapturada" class="photo-preview">
           <img [src]="fotoCapturada" alt="Foto de la mascota" />
-          <ion-button 
-            fill="clear" 
-            color="danger" 
-            size="small" 
-            (click)="eliminarFoto()"
-            class="remove-photo">
+          <ion-button fill="clear" color="danger" size="small" (click)="eliminarFoto()" class="remove-photo">
             <ion-icon name="trash" slot="icon-only"></ion-icon>
           </ion-button>
         </div>
@@ -127,29 +97,52 @@
 
       <!-- FORM ACTIONS -->
       <div class="form-actions">
-        <ion-button 
-          expand="block" 
-          color="primary" 
-          (click)="addOrUpdate()"
-          [disabled]="!form.nombre || !form.especie"
+        <ion-button expand="block" color="primary" (click)="addOrUpdate()" [disabled]="!form.nombre || !form.especie"
           class="save-button">
           <ion-icon [name]="editingId ? 'checkmark' : 'add'" slot="start"></ion-icon>
           {{ editingId ? 'Guardar Cambios' : 'Agregar Mascota' }}
         </ion-button>
-        
-        <ion-button 
-          expand="block" 
-          fill="clear" 
-          color="medium" 
-          (click)="cancelForm()"
-          class="cancel-button">
+
+        <ion-button expand="block" fill="clear" color="medium" (click)="cancelForm()" class="cancel-button">
           Cancelar
         </ion-button>
       </div>
     </ion-card-content>
   </ion-card>
 
+  <!-- SYNC STATUS BAR -->
+  <ion-card class="sync-status-card" *ngIf="mascotas.length > 0">
+    <ion-card-content class="sync-status-content">
+      <div class="sync-status-info">
+        <ion-icon
+          [name]="syncState.status === 'syncing' ? 'sync' : syncState.status === 'success' ? 'cloud-done' : 'cloud-upload'"
+          [color]="syncState.status === 'syncing' ? 'primary' : syncState.status === 'success' ? 'success' : 'medium'"
+          [class.spinning]="syncState.status === 'syncing'">
+        </ion-icon>
+        <div class="sync-text">
+          <span class="sync-label">{{ getSyncStatusText() }}</span>
+          <span class="sync-message" *ngIf="syncState.message">{{ syncState.message }}</span>
+        </div>
+      </div>
+
+      <div class="sync-actions">
+        <ion-button fill="outline" size="small" color="primary" (click)="sincronizarConServidor()"
+          [disabled]="syncState.status === 'syncing'">
+          <ion-icon name="cloud-upload" slot="start"></ion-icon>
+          Sincronizar
+        </ion-button>
+
+        <ion-button fill="outline" size="small" color="success" (click)="importarDesdeAPI()"
+          [disabled]="syncState.status === 'syncing'">
+          <ion-icon name="cloud-download" slot="start"></ion-icon>
+          Importar API
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Lista de Mascotas -->
+
   <div class="mascotas-section" id="mascotas-list">
     <div class="section-header" *ngIf="mascotas.length > 0">
       <h2>
@@ -161,28 +154,19 @@
     <div class="mascotas-grid">
       <ion-card *ngFor="let m of mascotas" class="mascota-card">
         <div class="mascota-image">
-          <img 
-            [src]="m.foto || 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=300&fit=crop&crop=center'" 
-            [alt]="m.nombre"
-            (error)="onImageError($event)" />
+          <img
+            [src]="m.foto || 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=300&fit=crop&crop=center'"
+            [alt]="m.nombre" (error)="onImageError($event)" />
           <div class="mascota-actions">
-            <ion-button 
-              fill="clear" 
-              color="light" 
-              size="small" 
-              (click)="edit(m)">
+            <ion-button fill="clear" color="light" size="small" (click)="edit(m)">
               <ion-icon name="create" slot="icon-only"></ion-icon>
             </ion-button>
-            <ion-button 
-              fill="clear" 
-              color="light" 
-              size="small" 
-              (click)="confirmDelete(m)">
+            <ion-button fill="clear" color="light" size="small" (click)="confirmDelete(m)">
               <ion-icon name="trash" slot="icon-only"></ion-icon>
             </ion-button>
           </div>
         </div>
-        
+
         <ion-card-content class="mascota-info">
           <h3 class="mascota-nombre">{{ m.nombre }}</h3>
           <div class="mascota-details">
@@ -194,6 +178,11 @@
               <ion-icon name="time"></ion-icon>
               <ion-label>{{ m.edad }}</ion-label>
             </ion-chip>
+            <ion-chip [color]="getSyncStatusColor(m)" class="detail-chip sync-badge">
+              <ion-icon [name]="getSyncStatusIcon(m)"></ion-icon>
+              <ion-label>{{ m.syncStatus === 'synced' ? 'Sincronizado' : m.syncStatus === 'pending' ? 'Pendiente' :
+                'Local' }}</ion-label>
+            </ion-chip>
           </div>
           <p class="mascota-notas" *ngIf="m.notas">{{ m.notas }}</p>
         </ion-card-content>
@@ -203,7 +192,8 @@
     <!-- Empty State -->
     <div class="empty-state" *ngIf="mascotas.length === 0">
       <div class="empty-content">
-        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&h=200&fit=crop&crop=center" alt="Sin mascotas" class="empty-image">
+        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&h=200&fit=crop&crop=center"
+          alt="Sin mascotas" class="empty-image">
         <h3>¡Aún no tienes mascotas!</h3>
         <p>Comienza agregando tu primera mascota con el botón de abajo</p>
         <ion-button color="primary" (click)="startCreate()">

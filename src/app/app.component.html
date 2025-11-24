@@ -1,33 +1,40 @@
 <ion-app>
   <ion-header>
     <ion-toolbar color="primary">
-      <ion-title>Kuichi</ion-title>
+      
+      <ion-title>
+        <img src="/assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
+      </ion-title>
 
       <ion-buttons slot="end">
-        <ion-button routerLink="/home" color="light">
-          <ion-icon name="home"></ion-icon>
+        
+        <ion-button routerLink="/home" title="Inicio">
+          <ion-icon name="home" slot="icon-only" class="nav-icon"></ion-icon>
         </ion-button>
 
         <ng-container *ngIf="isAuth">
-          <ion-button routerLink="/mascotas" color="light">
-            <ion-icon name="paw"></ion-icon>
+          
+          <ion-button routerLink="/mascotas" title="Mis Mascotas">
+            <ion-icon name="paw" slot="icon-only" class="nav-icon"></ion-icon>
           </ion-button>
 
-          <ion-button routerLink="/ofertas" color="light">
-            <ion-icon name="pricetag"></ion-icon>
+          <ion-button routerLink="/ofertas" title="Ofertas">
+            <ion-icon name="pricetag" slot="icon-only" class="nav-icon"></ion-icon>
           </ion-button>
-
-          <ion-button (click)="logout()" color="light">
-            <ion-icon name="log-out"></ion-icon>
+          
+          <ion-button (click)="logout()" title="Cerrar Sesión">
+            <ion-icon name="log-out-outline" slot="icon-only" class="logout-icon"></ion-icon>
           </ion-button>
+          
         </ng-container>
 
         <ng-container *ngIf="!isAuth">
-          <ion-button routerLink="/home" color="light">
-            <ion-icon name="log-in"></ion-icon>
+          <ion-button routerLink="/login" title="Iniciar Sesión">
+            <ion-icon name="log-in-outline" slot="icon-only" class="nav-icon"></ion-icon>
           </ion-button>
         </ng-container>
       </ion-buttons>
+
     </ion-toolbar>
   </ion-header>
 

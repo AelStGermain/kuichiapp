@@ -1,93 +1,161 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
+
     <ion-title>
       <img src="/assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
     </ion-title>
+
+    <ion-buttons slot="end">
+
+      <ng-container *ngIf="isLoggedIn">
+
+        <ion-button (click)="navigateTo('/mascotas')" title="Mis Mascotas">
+          <ion-icon name="paw" slot="icon-only" class="nav-icon"></ion-icon>
+        </ion-button>
+
+        <ion-button (click)="navigateTo('/veterinarias')" title="Veterinarias">
+          <ion-icon name="pin" slot="icon-only" class="nav-icon"></ion-icon>
+        </ion-button>
+
+        <ion-button (click)="logout()" title="Cerrar Sesión">
+          <ion-icon name="log-out-outline" slot="icon-only" class="logout-icon"></ion-icon>
+        </ion-button>
+
+      </ng-container>
+
+      <ng-container *ngIf="!isLoggedIn && currentPath !== '/login'">
+        <ion-button (click)="navigateTo('/login')" title="Iniciar Sesión">
+          <ion-icon name="log-in-outline" slot="icon-only" class="nav-icon"></ion-icon>
+        </ion-button>
+      </ng-container>
+
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="home-content">
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="hero-background">
-      <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&h=600&fit=crop&crop=center" alt="Mascotas felices" class="hero-image">
-      <div class="hero-overlay"></div>
-    </div>
-    
-    <div class="hero-content ion-padding">
-      <div class="welcome-text">
-        <div class="hero-logo">
-          <img src="/assets/images/kuichi_logo.png" alt="Kuichi Logo" class="hero-logo-img">
-        </div>
+
+  <div class="dashboard-container" *ngIf="isLoggedIn">
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-content">
         <h1>¡Bienvenido a Kuichi! 🐾</h1>
-        <p>La app completa para el cuidado de tus mascotas</p>
+        <p class="hero-subtitle">Tu compañero digital para el cuidado de mascotas</p>
+        <div class="hero-features">
+          <div class="feature-item">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span>Gestiona información de tus mascotas</span>
+          </div>
+          <div class="feature-item">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span>Encuentra veterinarias cercanas</span>
+          </div>
+          <div class="feature-item">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span>Descubre ofertas especiales</span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Features Preview: Only show if user is logged in -->
-  <div class="features-preview ion-padding" *ngIf="isLoggedIn">
-    <h2>¿Qué puedes hacer?</h2>
-    <ion-grid>
+    <!-- Estadísticas -->
+    <ion-grid class="stats-grid">
       <ion-row>
-        <ion-col size="6">
-          <div class="feature-card" (click)="navigateTo('/mascotas')">
-            <ion-icon name="camera" color="primary"></ion-icon>
-            <h3>Fotos</h3>
-            <p>Captura momentos especiales</p>
-          </div>
+        <ion-col size="12" size-md="4">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="paw" color="primary"></ion-icon>
+              <h2>{{ totalMascotas }}</h2>
+              <p>Mascotas Registradas</p>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
-        <ion-col size="6">
-          <div class="feature-card" (click)="navigateTo('/veterinarias')">
-            <ion-icon name="location" color="success"></ion-icon>
-            <h3>Veterinarias</h3>
-            <p>Encuentra las más cercanas</p>
-          </div>
+        <ion-col size="12" size-md="4">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="location" color="success"></ion-icon>
+              <h2>{{ totalVeterinarias }}</h2>
+              <p>Veterinarias Disponibles</p>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
-        <ion-col size="6">
-          <div class="feature-card" (click)="navigateTo('/mascotas')">
-            <ion-icon name="heart" color="danger"></ion-icon>
-            <h3>Cuidados</h3>
-            <p>Registra información médica</p>
-          </div>
-        </ion-col>
-        <ion-col size="6">
-          <div class="feature-card" (click)="navigateTo('/ofertas')">
-            <ion-icon name="pricetag" color="warning"></ion-icon>
-            <h3>Ofertas</h3>
-            <p>Descuentos exclusivos</p>
-          </div>
+        <ion-col size="12" size-md="4">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="pricetag" color="warning"></ion-icon>
+              <h2>{{ totalOfertas }}</h2>
+              <p>Ofertas Activas</p>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
       </ion-row>
     </ion-grid>
+
+    <!-- Accesos Rápidos -->
+    <div class="quick-access-section">
+      <h2>¿Qué deseas hacer hoy?</h2>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="4">
+            <ion-card button (click)="navigateToTab('mascotas')" class="feature-card">
+              <div class="card-image">
+                <ion-icon name="paw"></ion-icon>
+              </div>
+              <ion-card-header>
+                <ion-card-title>Mis Mascotas</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                Administra la información de tus mascotas, agrega fotos y mantén sus datos actualizados.
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+
+          <ion-col size="12" size-md="4">
+            <ion-card button (click)="navigateToTab('veterinarias')" class="feature-card">
+              <div class="card-image veterinarias">
+                <ion-icon name="location"></ion-icon>
+              </div>
+              <ion-card-header>
+                <ion-card-title>Veterinarias</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                Encuentra veterinarias cercanas, consulta horarios y obtén direcciones en el mapa.
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+
+          <ion-col size="12" size-md="4">
+            <ion-card button (click)="navigateToTab('ofertas')" class="feature-card">
+              <div class="card-image ofertas">
+                <ion-icon name="pricetag"></ion-icon>
+              </div>
+              <ion-card-header>
+                <ion-card-title>Ofertas</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                Descubre ofertas especiales en productos y servicios para tus mascotas.
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
   </div>
 
-  <!-- Login/Register Call to Action: Only show if user is NOT logged in -->
-  <div class="login-cta ion-padding" *ngIf="!isLoggedIn">
-    <ion-card class="cta-card">
-      <ion-card-header>
-        <ion-card-title class="text-center">
-          <ion-icon name="log-in" color="primary"></ion-icon>
-          Únete a la Comunidad
-        </ion-card-title>
-      </ion-card-header>
-      <ion-card-content class="text-center">
-        <p>Para acceder a todas las funcionalidades, por favor, inicia sesión o regístrate.</p>
-        <ion-button 
-          expand="block" 
-          color="primary" 
-          class="login-button" 
-          (click)="navigateTo('/login')">
-          <ion-icon name="log-in" slot="start"></ion-icon>
-          Ir a Iniciar Sesión
-        </ion-button>
-        <div class="demo-info">
-          <ion-chip color="success">
-            <ion-icon name="person" color="light"></ion-icon>
-            <ion-label><strong>Usuario de prueba: Sincere@april.biz</strong></ion-label>
-          </ion-chip>
-        </div>
-      </ion-card-content>
-    </ion-card>
+  <!-- Mensaje para usuarios no logueados -->
+  <div class="not-logged-in" *ngIf="!isLoggedIn">
+    <div class="login-hero">
+      <h1>Kuichi 🐾</h1>
+      <p>Tu compañero digital para el cuidado de mascotas</p>
+      <ion-button expand="block" (click)="navigateTo('/login')" size="large">
+        <ion-icon name="log-in-outline" slot="start"></ion-icon>
+        Iniciar Sesión
+      </ion-button>
+    </div>
   </div>
+
 </ion-content>

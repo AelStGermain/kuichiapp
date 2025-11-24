@@ -1,95 +1,148 @@
-// src/app/home/home.page.ts (Código MEJORADO)
+// src/app/home/home.page.ts
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
-import { 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
-  IonContent, 
-  IonCard, 
-  IonCardHeader, 
-  IonCardTitle, 
-  IonCardContent, 
-  IonButton, 
+import { CommonModule } from '@angular/common';
+import {
+  // Componentes requeridos para el Header y Core
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
   IonIcon,
-  IonLabel,
-  IonChip,
+  IonButton,
+  IonButtons,
+
+  // Componentes del Cuerpo (Mantengo para evitar errores si el HTML los usa)
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
   IonGrid,
   IonRow,
-  IonCol
-  // IonInput eliminado ya que no se usa en el HTML
+  IonCol,
+  IonChip,
+  IonLabel,
+
 } from '@ionic/angular/standalone';
-import { CommonModule } from '@angular/common';
-import { AuthService } from '../services/auth.service';
 import { addIcons } from 'ionicons';
-import { logIn, mail, lockClosed, informationCircle, flash, person, camera, location, heart, pricetag, home, paw, logOut } from 'ionicons/icons'; // Añadidos home, paw, logOut
+import {
+  logIn, mail, lockClosed, informationCircle, flash, person,
+  paw, pin, logOutOutline, logInOutline, camera, location, heart, pricetag,
+  checkmarkCircle
+} from 'ionicons/icons';
+
+// 🚨 RUTA CORREGIDA: Se asume que el servicio está en '../services/auth.service'
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    // Imports mínimos para el Header/Core
     IonHeader,
     IonToolbar,
     IonTitle,
     IonContent,
+    IonIcon,
+    IonButton,
+    IonButtons,
+
+    // Imports del Dashboard
     IonCard,
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonButton,
-    IonIcon,
-    IonLabel,
-    IonChip,
     IonGrid,
     IonRow,
-    IonCol
-    // IonInput eliminado de aquí también
+    IonCol,
+    IonChip,
+    IonLabel,
   ],
 })
-export class HomePage {
-  private authService = inject(AuthService);
-  private router = inject(Router);
+export class HomePage implements OnInit {
 
-  // Modelo de usuario para login (aunque no se usa en este HTML, es bueno mantenerlo)
-  usuario = { email: '', password: '' }; 
+  // Inyección de dependencias
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
+  // Propiedades definidas para el template HTML
+  isLoggedIn: boolean = false;
+  currentPath: string = '';
+
+  // Estadísticas para el dashboard
+  totalMascotas: number = 0;
+  totalVeterinarias: number = 0;
+  totalOfertas: number = 0;
 
   constructor() {
-    // Es crucial que todos los iconos usados en toda la app estén cargados aquí.
-    addIcons({ 
-      logIn, mail, lockClosed, informationCircle, flash, person, 
-      camera, location, heart, pricetag, 
-      // Iconos usados en app.component.html:
-      home, paw, logOut 
+    // Registro de todos los iconos usados
+    addIcons({
+      logIn, mail, lockClosed, informationCircle, flash, person,
+      paw, pin, logOutOutline, logInOutline, camera, location, heart, pricetag,
+      checkmarkCircle
     });
   }
 
-  get isLoggedIn(): boolean {
-    return this.authService.isAuthenticated();
+  ngOnInit() {
+    // Suscripción al estado de autenticación del servicio (Observable)
+    this.authService.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
+      this.isLoggedIn = isAuthenticated;
+      if (isAuthenticated) {
+        this.loadStatistics();
+      }
+    });
+    // Obtiene la ruta actual para la lógica condicional del Login/Logout
+    this.currentPath = this.router.url;
   }
 
-  navigateTo(path: string) {
-    this.router.navigate([path]);
-  }
-  
-  async login() {
-    console.log('Intento de Login:', this.usuario);
-    const ok = await this.authService.login(this.usuario.email, this.usuario.password);
-    if (ok) {
-        this.router.navigate(['/mascotas']);
-    } else {
-        // Manejo de error
+  /**
+   * Carga las estadísticas desde localStorage para mostrar en el dashboard
+   */
+  loadStatistics() {
+    try {
+      // Cargar mascotas
+      const mascotasData = localStorage.getItem('kuichi_mascotas_v1');
+      this.totalMascotas = mascotasData ? JSON.parse(mascotasData).length : 0;
+
+      // Cargar veterinarias
+      const veterinariasData = localStorage.getItem('kuichi_veterinarias_v1');
+      this.totalVeterinarias = veterinariasData ? JSON.parse(veterinariasData).length : 0;
+
+      // Cargar ofertas (asumiendo que existe un storage similar)
+      const ofertasData = localStorage.getItem('kuichi_ofertas_v1');
+      this.totalOfertas = ofertasData ? JSON.parse(ofertasData).length : 0;
+    } catch (error) {
+      console.error('Error al cargar estadísticas:', error);
     }
   }
 
-  async quickLogin() {
-    this.usuario.email = 'Sincere@april.biz';
-    this.usuario.password = 'azerty'; 
-    await this.login();
+  /**
+   * Navega a una URL específica.
+   */
+  navigateTo(url: string) {
+    this.router.navigateByUrl(url);
+  }
+
+  /**
+   * 🔒 Cierra la sesión del usuario y redirige al login.
+   */
+  async logout() {
+    try {
+      await this.authService.logout();
+      this.router.navigateByUrl('/login');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  }
+
+  /**
+   * Navega a una ruta dentro de tabs
+   */
+  navigateToTab(tab: string) {
+    this.router.navigateByUrl(`/tabs/${tab}`);
   }
 }

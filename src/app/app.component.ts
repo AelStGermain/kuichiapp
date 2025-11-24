@@ -9,17 +9,20 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule],
+  imports: [
+    CommonModule, 
+    IonicModule, 
+    RouterModule // Necesario si el HTML usa routerLink
+  ],
   // Dejamos schemas por ahora, no molestan
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  // Eliminamos el constructor y las funciones relacionadas con AuthService
-  // Si la app carga, el problema está en AuthService/Router en la inicialización.
   
   // Añadimos propiedades dummy para que el HTML no falle.
-  isAuth: boolean = false; 
+  // 💡 Dejamos 'true' para forzar que los iconos de navegación/logout sean visibles.
+  isAuth: boolean = true; 
   
   constructor() {
     // Si necesitas inicializar algo base, lo pones aquí.

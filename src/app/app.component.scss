@@ -1,3 +1,5 @@
+/* === REGLAS GLOBALES Y DE ESPACIADO === */
+
 ion-toolbar[role="toolbar"] {
   --ion-safe-area-top: 0px;
 }
@@ -10,4 +12,55 @@ ion-toolbar[role="toolbar"] {
     margin-left: 6px;
     color: white;
   }
+}
+
+/* === VARIABLES DE COLOR OLDSCHOOL (Añadidas para Consistencia) === */
+:root {
+  --oldschool-dark: #333333;
+  --oldschool-light: #ffffff;
+}
+
+/* === ENCABEZADO Y NAVBAR (ESTILO OLDSCHOOL) === */
+ion-toolbar {
+    // Estilo de alto contraste y plano (Borde duro)
+    border-bottom: 3px solid var(--oldschool-dark); 
+    box-shadow: none !important;
+    --min-height: 56px; 
+}
+
+.navbar-logo {
+    height: 36px;
+    // Hace el logo blanco y plano (Necesario si el logo tiene colores oscuros)
+    filter: brightness(0) invert(1) !important; 
+    margin: 0 auto;
+}
+
+/* 💥 SOLUCIÓN DEFINITIVA DE VISIBILIDAD DE ICONOS */
+// Apunta a todos los íconos dentro del slot="end" en la toolbar para máxima especificidad.
+ion-toolbar ion-buttons[slot="end"] ion-icon {
+    // 1. Color Blanco Puro (Alto Contraste)
+    color: #FFFFFF !important; 
+    
+    // 2. Tamaño Visible
+    font-size: 26px !important; 
+    
+    // 3. Sobreescribimos cualquier variable interna de Ionic
+    --ionicon-color: #FFFFFF !important;
+}
+
+// Estilos para los íconos que usan las clases nav-icon/logout-icon
+.nav-icon,
+.logout-icon {
+    color: #FFFFFF;
+    font-size: 26px;
+    transition: none; 
+}
+
+ion-toolbar ion-buttons ion-button {
+    --background: transparent;
+    // Efecto de botón presionado de los 90s (sutil)
+    &:active {
+      border: 1px solid var(--oldschool-light);
+      background: rgba(255, 255, 255, 0.1);
+    }
 }

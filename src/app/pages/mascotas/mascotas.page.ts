@@ -4,10 +4,11 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { SyncService, SyncState } from '../../services/sync.service';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
 import { addIcons } from 'ionicons';
-import { cameraOutline, locationOutline, mapOutline, paw, home, pricetag, logOut, add, create, checkmark, close, fish, time, documentText, camera, heart, medical, call, map, checkmarkCircle, trash, images } from 'ionicons/icons';
+import { cameraOutline, locationOutline, mapOutline, paw, home, pricetag, logOut, add, create, checkmark, close, fish, time, documentText, camera, heart, medical, call, map, checkmarkCircle, trash, images, cloudUpload, cloudDownload, sync, cloudDone } from 'ionicons/icons';
 
 export type Mascota = {
   id: string;
@@ -17,6 +18,9 @@ export type Mascota = {
   notas?: string;
   createdAt: number;
   foto?: string;
+  syncStatus?: 'pending' | 'synced' | 'error';
+  lastSyncedAt?: number;
+  remoteId?: string;
 };
 
 export interface Veterinaria {
@@ -40,29 +44,39 @@ export class MascotasPage {
   form: Partial<Mascota> = {};
   editingId: string | null = null;
   showForm = false;
-  
+
   // Cámara
   fotoCapturada: string | undefined;
-  
+
   // GPS y Veterinarias
   ubicacionActual: { lat: number; lng: number } | null = null;
   veterinarias: Veterinaria[] = [];
   buscandoVeterinarias = false;
   obteniendoUbicacion = false;
 
+  // Sincronización
+  syncState: SyncState = { status: 'idle', lastSyncedAt: null, message: '' };
+
   private key = 'kuichi_mascotas_v1';
 
   constructor(
     private toastCtrl: ToastController,
     private router: Router,
-    @Inject(AuthService) private auth: AuthService
+    @Inject(AuthService) private auth: AuthService,
+    private syncService: SyncService
   ) {
-    addIcons({ 
-      cameraOutline, locationOutline, mapOutline, paw, home, pricetag, logOut, 
-      add, create, checkmark, close, fish, time, documentText, camera, heart, 
-      medical, call, map, checkmarkCircle, trash, images 
+    addIcons({
+      cameraOutline, locationOutline, mapOutline, paw, home, pricetag, logOut,
+      add, create, checkmark, close, fish, time, documentText, camera, heart,
+      medical, call, map, checkmarkCircle, trash, images, cloudUpload, cloudDownload,
+      sync, cloudDone
     });
     this.load();
+
+    // Suscribirse a cambios de estado de sincronización
+    this.syncService.syncState$.subscribe(state => {
+      this.syncState = state;
+    });
   }
 
   // getter para template: true si hay usuario autenticado
@@ -123,7 +137,7 @@ export class MascotasPage {
         }
       }
     ];
-    
+
     document.body.appendChild(alert);
     await alert.present();
   }
@@ -237,7 +251,7 @@ export class MascotasPage {
         role: 'cancel'
       }
     ];
-    
+
     document.body.appendChild(actionSheet);
     await actionSheet.present();
   }
@@ -250,7 +264,7 @@ export class MascotasPage {
         resultType: CameraResultType.DataUrl,
         source: CameraSource.Camera
       });
-      
+
       this.fotoCapturada = image.dataUrl;
       this.showToast('Foto capturada correctamente', 'success');
     } catch (error) {
@@ -267,7 +281,7 @@ export class MascotasPage {
         resultType: CameraResultType.DataUrl,
         source: CameraSource.Photos
       });
-      
+
       this.fotoCapturada = image.dataUrl;
       this.showToast('Foto seleccionada correctamente', 'success');
     } catch (error) {
@@ -284,12 +298,12 @@ export class MascotasPage {
         enableHighAccuracy: true,
         timeout: 10000
       });
-      
+
       this.ubicacionActual = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      
+
       this.showToast('Ubicación obtenida', 'success');
       await this.buscarVeterinarias();
     } catch (error) {
@@ -302,7 +316,7 @@ export class MascotasPage {
 
   async buscarVeterinarias() {
     this.buscandoVeterinarias = true;
-    
+
     // Simulamos veterinarias cercanas (en una app real usarías Google Places API)
     const veterinariasMock: Veterinaria[] = [
       {
@@ -347,6 +361,86 @@ export class MascotasPage {
   llamarVeterinaria(telefono: string) {
     if (telefono) {
       window.open(`tel:${telefono}`, '_system');
+    }
+  }
+
+  // ========== FUNCIONALIDADES DE SINCRONIZACIÓN CON API ==========
+
+  /**
+   * Sincroniza mascotas locales con el servidor remoto
+   */
+  async sincronizarConServidor() {
+    if (this.mascotas.length === 0) {
+      this.showToast('No hay mascotas para sincronizar', 'warning');
+      return;
+    }
+
+    const success = await this.syncService.sincronizarMascotas(this.mascotas);
+
+    if (success) {
+      // Recargar mascotas con estado actualizado
+      this.load();
+      this.showToast('✅ Sincronización completada', 'success');
+    } else {
+      this.showToast('❌ Error en la sincronización', 'danger');
+    }
+  }
+
+  /**
+   * Importa mascotas desde API externa (JSONPlaceholder)
+   */
+  async importarDesdeAPI() {
+    const mascotasImportadas = await this.syncService.importarDesdeAPI();
+
+    if (mascotasImportadas.length > 0) {
+      // Agregar mascotas importadas a la lista existente
+      this.mascotas = [...mascotasImportadas, ...this.mascotas];
+      this.saveStore();
+      this.showToast(`✅ ${mascotasImportadas.length} mascotas importadas desde API`, 'success');
+      this.scrollToTop();
+    } else {
+      this.showToast('❌ No se pudieron importar mascotas', 'danger');
+    }
+  }
+
+  /**
+   * Obtiene el texto del estado de sincronización
+   */
+  getSyncStatusText(): string {
+    const state = this.syncState;
+    if (state.status === 'syncing') {
+      return state.message;
+    }
+    if (state.lastSyncedAt) {
+      const date = new Date(state.lastSyncedAt);
+      return `Última sincronización: ${date.toLocaleString('es-CL')}`;
+    }
+    return 'No sincronizado';
+  }
+
+  /**
+   * Obtiene el color del badge de sincronización
+   */
+  getSyncStatusColor(mascota: Mascota): string {
+    if (!mascota.syncStatus) return 'medium';
+    switch (mascota.syncStatus) {
+      case 'synced': return 'success';
+      case 'pending': return 'warning';
+      case 'error': return 'danger';
+      default: return 'medium';
+    }
+  }
+
+  /**
+   * Obtiene el icono del badge de sincronización
+   */
+  getSyncStatusIcon(mascota: Mascota): string {
+    if (!mascota.syncStatus) return 'cloud-upload';
+    switch (mascota.syncStatus) {
+      case 'synced': return 'cloud-done';
+      case 'pending': return 'cloud-upload';
+      case 'error': return 'close-circle';
+      default: return 'cloud-upload';
     }
   }
 }

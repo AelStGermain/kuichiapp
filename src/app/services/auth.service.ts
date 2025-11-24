@@ -1,124 +1,52 @@
+// src/app/services/auth.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
-
-// La interfaz de usuario ahora puede incluir un ID de la API
-export interface User {
-  id?: number; // ID de la API (opcional)
-  email: string;
-  name?: string;
-  loggedAt: number;
-}
-
-// Interfaz para la respuesta de la API de JSONPlaceholder
-export interface ApiUser {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  website: string;
-}
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private key = 'kuichi_user_v1';
-  private userSubject = new BehaviorSubject<User | null>(this.getStoredUser());
-  public user$ = this.userSubject.asObservable();
+  
+  // Propiedad interna que almacena el estado
+  private _isAuthenticated = new BehaviorSubject<boolean>(false); 
+  
+  // Propiedad pública que es un Observable (para suscribirse en el HTML o TS)
+  public isAuthenticated$ = this._isAuthenticated.asObservable();
 
   constructor() {
-    const user = this.getStoredUser();
-    if (user) {
-      this.userSubject.next(user);
-    }
+    this.checkToken(); 
   }
 
+  // 🛡️ MÉTODO SÍNCRONO REQUERIDO POR EL GUARD (CORRECCIÓN)
   /**
-   * Intenta iniciar sesión llamando a una API externa.
-   * @param email El email del usuario.
-   * @param password La contraseña (ignorada por la API de prueba, pero necesaria para la firma).
-   * @returns true si el inicio de sesión fue exitoso, false en caso contrario.
+   * Devuelve el estado actual de autenticación de forma síncrona.
+   * Usado principalmente por los Guards y otras funciones de chequeo inmediato.
    */
+  public isAuthenticated(): boolean {
+      return this._isAuthenticated.value; // Devuelve el valor actual del BehaviorSubject
+  }
+  
+  private checkToken() {
+    const token = localStorage.getItem('auth_token');
+    this._isAuthenticated.next(!!token); 
+  }
+
   async login(email: string, password: string): Promise<boolean> {
-    if (!email || !password) return false;
-
-    // La API de prueba no valida contraseña, solo busca por email.
-    // En una API real, enviarías email y password en un POST.
-    const url = `${environment.apiUrl}/users?email=${email}`;
-
-    try {
-      // Hacemos la petición a la API y esperamos el primer valor
-      const users = await firstValueFrom(this.http.get<ApiUser[]>(url));
-      
-      // Verificamos si la API devolvió algún usuario con ese email
-      const apiUser = users?.[0];
-
-      if (apiUser) {
-        // Creamos nuestro objeto de usuario y lo guardamos
-        const user: User = { 
-          id: apiUser.id,
-          email: apiUser.email, 
-          name: apiUser.name,
-          loggedAt: Date.now() 
-        };
-        
-        localStorage.setItem(this.key, JSON.stringify(user));
-        this.userSubject.next(user);
+    // Simulación del proceso de Login
+    if (email === 'Sincere@april.biz' && password === 'password') {
+        localStorage.setItem('auth_token', 'simulated_jwt_token');
+        this._isAuthenticated.next(true); 
         return true;
-      }
-      
-      // Si no se encontró el usuario
-      return false;
-
-    } catch (error) {
-      console.error('Error en el inicio de sesión:', error);
-      return false;
+    } else {
+        this._isAuthenticated.next(false);
+        return false;
     }
   }
 
-  logout(): void {
-    localStorage.removeItem(this.key);
-    this.userSubject.next(null);
-  }
-
-  getUser(): User | null {
-    return this.userSubject.value;
-  }
-
-  private getStoredUser(): User | null {
-    try {
-      const raw = localStorage.getItem(this.key);
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  isAuthenticated(): boolean {
-    const user = this.getUser();
-    if (!user) return false;
-    
-    const maxAge = 24 * 60 * 60 * 1000; // 24 horas
-    const isValid = (Date.now() - user.loggedAt) < maxAge;
-    
-    if (!isValid) {
-      this.logout();
-      return false;
-    }
-    
-    return true;
-  }
-
-  renewSession(): void {
-    const user = this.getUser();
-    if (user) {
-      user.loggedAt = Date.now();
-      localStorage.setItem(this.key, JSON.stringify(user));
-      this.userSubject.next(user);
-    }
+  async logout(): Promise<void> {
+    localStorage.removeItem('auth_token'); 
+    this._isAuthenticated.next(false);     
   }
 }

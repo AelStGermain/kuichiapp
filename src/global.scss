@@ -35,20 +35,88 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* === TEMA VERDE KUICHI === */
+:root {
+  /* Paleta de colores verdes suaves */
+  --ion-color-primary: #66BB6A;
+  --ion-color-primary-rgb: 102, 187, 106;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #5aa55d;
+  --ion-color-primary-tint: #75c279;
+
+  --ion-color-secondary: #81C784;
+  --ion-color-secondary-rgb: 129, 199, 132;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #72af74;
+  --ion-color-secondary-tint: #8ecd90;
+
+  --ion-color-tertiary: #4CAF50;
+  --ion-color-tertiary-rgb: 76, 175, 80;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #439a46;
+  --ion-color-tertiary-tint: #5eb762;
+
+  --ion-color-success: #A5D6A7;
+  --ion-color-success-rgb: 165, 214, 167;
+  --ion-color-success-contrast: #000000;
+  --ion-color-success-contrast-rgb: 0, 0, 0;
+  --ion-color-success-shade: #91bc93;
+  --ion-color-success-tint: #aedab0;
+
+  /* Colores de fondo */
+  --ion-background-color: #f5f5f5;
+  --ion-background-color-rgb: 245, 245, 245;
+}
+
+/* Tipografía mejorada */
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+/* Toolbar con tema verde */
 ion-toolbar {
-  --background: #4caf50;
+  --background: #66BB6A;
   --color: #fff;
 }
 
 ion-content {
-  background: #f9f9f9;
+  --background: #f5f5f5;
 }
 
-ion-buttons ion-button {
-  --color: white;
+/* Asegurar que los botones e iconos del navbar sean visibles */
+ion-header ion-toolbar ion-buttons ion-button {
+  --color: white !important;
 }
 
+/* Máxima especificidad para iconos - asegurar visibilidad */
+ion-header ion-toolbar ion-buttons ion-button ion-icon,
+ion-toolbar ion-buttons ion-icon,
 ion-icon {
   color: white !important;
-  font-size: 20px;
+  font-size: 24px !important;
+  --ionicon-stroke-width: 32px !important;
+}
+
+/* Estilos específicos para iconos del navbar */
+.nav-icon,
+.logout-icon {
+  color: white !important;
+  font-size: 26px !important;
+}
+
+/* Botones con tema verde */
+ion-button {
+  --border-radius: 8px;
+}
+
+/* Cards con sombras suaves */
+ion-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

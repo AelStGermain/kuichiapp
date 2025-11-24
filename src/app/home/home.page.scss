@@ -1,243 +1,294 @@
+// src/app/home/home.page.scss
+
+/* === RESET Y TONOS OLDSCHOOL === */
 :root {
-  --kuichi-primary: #3880ff;
-  --kuichi-success: #2dd36f;
-  --kuichi-warning: #ffc409;
-  --kuichi-danger: #eb445a;
-  --kuichi-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    // Los colores primarios son demasiado vibrantes. Usaremos azules y grises más planos.
+    // --kuichi-primary: #3880ff; -> Usaremos un color más sobrio para el navbar
+    --oldschool-dark: #333333; // Color oscuro para fondo de botones o texto
+    --oldschool-light: #ffffff; // Blanco puro
+    --oldschool-accent: #007bff; // Un azul plano y clásico (como un enlace)
+    --oldschool-border: #cccccc; // Gris claro para bordes
 }
 
-.home-content {
-  --background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
-}
+// 🎯 CAMBIO MAYOR: Navbar con estilo plano y definido
+ion-toolbar {
+    // Adiós al degradado del primary. Usamos un color sólido.
+    --background: var(--kuichi-primary, #3880ff) !important;
 
-.title-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+    // Altura fija, más robusta
+    --min-height: 56px;
 
-.title-icon {
-  font-size: 24px;
+    // Sin esquinas redondeadas en el header (por defecto Ionic lo hace, pero lo aseguramos)
+    border-bottom: 2px solid var(--oldschool-dark); // Borde grueso y oscuro
 }
 
 .navbar-logo {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-  max-width: 150px;
-  display: block;
-  margin: 0 auto;
+    height: 36px;
+    filter: brightness(0) invert(1); // Filtro para hacer el logo BLANCO y plano contra el fondo oscuro.
 }
 
-/* HERO SECTION */
+/* === ESTILO DE BOTONES Y ICONOS EN EL NAVBAR === */
+
+// Los botones de Ionic son transparentes por defecto, vamos a darles cuerpo.
+ion-button {
+    // 💡 Oldschool Look: Alto Contraste y bordes
+    --padding-start: 10px;
+    --padding-end: 10px;
+
+    // El color de fondo es el color de la toolbar, para que se integren.
+    --background: transparent;
+
+    // Borde sutil, no totalmente plano
+    border: 1px solid transparent;
+
+    // Efecto hover/active como si se hundiera el botón
+    &:active {
+        border-color: var(--oldschool-dark);
+        opacity: 0.8;
+    }
+}
+
+// Estilo de los iconos (los hacemos visibles y grandes)
+.nav-icon,
+.logout-icon {
+    font-size: 26px; // Un poco más grandes para presencia
+    color: var(--oldschool-light); // Color BLANCO PURO para alto contraste
+    transition: none; // Eliminamos transiciones suaves
+}
+
+
+/* === AJUSTES DE FUENTE CLÁSICOS (Opcional) === */
+ion-title {
+    // Fuente más simple para el toque vintage
+    font-family: monospace, sans-serif;
+    font-weight: 700;
+}
+
+/* === ESTILOS DEL DASHBOARD === */
+.home-content {
+    --background: transparent;
+    background-image: url('/assets/images/home-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.95) 100%);
+        z-index: 0;
+    }
+}
+
+.dashboard-container {
+    padding: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Hero Section */
 .hero-section {
-  position: relative;
-  height: 280px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background: linear-gradient(135deg, rgba(102, 187, 106, 0.95) 0%, rgba(129, 199, 132, 0.95) 100%);
+    padding: 50px 20px;
+    color: white;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(102, 187, 106, 0.4);
+    backdrop-filter: blur(10px);
+
+    .hero-content {
+        h1 {
+            font-size: 36px;
+            margin: 0 0 15px 0;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            margin: 0 0 35px 0;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .hero-features {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-width: 450px;
+            margin: 0 auto;
+
+            .feature-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                text-align: left;
+                background: rgba(255, 255, 255, 0.15);
+                padding: 12px 20px;
+                border-radius: 12px;
+                backdrop-filter: blur(5px);
+
+                ion-icon {
+                    font-size: 28px;
+                    flex-shrink: 0;
+                }
+
+                span {
+                    font-size: 16px;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
 }
 
-.hero-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+.stats-grid {
+    margin-bottom: 30px;
+    padding: 0 16px;
 }
 
-.hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.stat-card {
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+
+    ion-card-content {
+        padding: 30px 20px;
+
+        ion-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+    }
 }
 
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(56, 128, 255, 0.8), rgba(45, 211, 111, 0.6));
-}
+.quick-access-section {
+    padding: 0 16px 100px 16px;
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  color: white;
-}
-
-.welcome-text h1 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.welcome-text p {
-  font-size: 1.1rem;
-  opacity: 0.95;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-
-.hero-logo {
-  margin-bottom: 16px;
-}
-
-.hero-logo-img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-}
-
-/* FEATURES PREVIEW */
-.features-preview {
-  background: white;
-  margin-top: -20px;
-  border-radius: 20px 20px 0 0;
-  position: relative;
-  z-index: 3;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-}
-
-.features-preview h2 {
-  text-align: center;
-  color: #1a1a1a;
-  margin-bottom: 20px;
-  font-weight: 600;
+    h2 {
+        font-size: 26px;
+        margin-bottom: 25px;
+        color: #333;
+        font-weight: bold;
+        text-align: center;
+    }
 }
 
 .feature-card {
-  text-align: center;
-  padding: 20px 10px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(0,0,0,0.05);
-  transition: transform 0.2s ease;
-  cursor: pointer;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+
+    &:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-image {
+        background: linear-gradient(135deg, #66BB6A 0%, #81C784 100%);
+        padding: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.veterinarias {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+        }
+
+        &.ofertas {
+            background: linear-gradient(135deg, #81C784 0%, #A5D6A7 100%);
+        }
+
+        ion-icon {
+            font-size: 72px;
+            color: white;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+    }
+
+    ion-card-header {
+        padding: 20px 20px 10px 20px;
+
+        ion-card-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+    }
+
+    ion-card-content {
+        padding: 0 20px 20px 20px;
+        font-size: 15px;
+        color: #666;
+        line-height: 1.6;
+    }
 }
 
-.feature-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+.not-logged-in {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
 
-.feature-card ion-icon {
-  font-size: 2.5rem;
-  margin-bottom: 8px;
-}
+    .login-hero {
+        text-align: center;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
 
-.feature-card h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 8px 0 4px 0;
-  color: #1a1a1a;
-}
+        h1 {
+            font-size: 52px;
+            margin-bottom: 15px;
+            color: #66BB6A;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-.feature-card p {
-  font-size: 0.85rem;
-  color: #666666;
-  margin: 0;
-}
+        p {
+            font-size: 19px;
+            color: #666;
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
 
-/* LOGIN SECTION */
-.login-section {
-  background: white;
-}
-
-.login-card {
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  overflow: hidden;
-}
-
-.login-card ion-card-header {
-  background: var(--kuichi-gradient);
-  color: white;
-  padding: 20px;
-}
-
-.login-card ion-card-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-weight: 600;
-}
-
-.input-item {
-  margin-bottom: 16px;
-  --border-radius: 12px;
-  --background: #f8f9fa;
-}
-
-.login-button {
-  margin-top: 20px;
-  --border-radius: 12px;
-  height: 48px;
-  font-weight: 600;
-}
-
-.demo-info {
-  text-align: center;
-  margin-top: 16px;
-}
-
-.demo-info ion-chip {
-  --background: rgba(56, 128, 255, 0.15);
-  --color: #2563eb;
-  border: 1px solid rgba(56, 128, 255, 0.3);
-}
-
-/* QUICK ACCESS */
-.quick-access {
-  background: white;
-  padding-top: 0;
-}
-
-.quick-access h3 {
-  text-align: center;
-  color: #1a1a1a;
-  margin-bottom: 16px;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .welcome-text h1 {
-    font-size: 1.8rem;
-  }
-  
-  .welcome-text p {
-    font-size: 1rem;
-  }
-  
-  .hero-section {
-    height: 240px;
-  }
-  
-  .feature-card {
-    padding: 16px 8px;
-  }
-  
-  .feature-card ion-icon {
-    font-size: 2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .welcome-text h1 {
-    font-size: 1.6rem;
-  }
-  
-  .hero-section {
-    height: 200px;
-  }
-  
-  .features-preview {
-    margin-top: -15px;
-  }
+        ion-button {
+            --background: linear-gradient(135deg, #66BB6A 0%, #81C784 100%);
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+            font-size: 17px;
+            font-weight: bold;
+            height: 50px;
+        }
+    }
 }

@@ -4,20 +4,40 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Iniciar Sesión</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-input label="Email" label-placement="floating" type="email" [(ngModel)]="usuario.email"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="Password" label-placement="floating" type="password" [(ngModel)]="usuario.password"></ion-input>
-      </ion-item>
-      <ion-button expand="full" (click)="login()">Login</ion-button>
-      <ion-button expand="full" color="secondary" (click)="quickLogin()">Quick Login (test)</ion-button>
-    </ion-card-content>
-  </ion-card>
+<ion-content class="login-content">
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Kuichi 🐾</h1>
+        <p>Tu compañero digital para el cuidado de mascotas</p>
+      </div>
+
+      <div class="login-form">
+        <ion-item>
+          <ion-input label="Email" labelPlacement="floating" type="email" [(ngModel)]="usuario.email"
+            placeholder="ejemplo@correo.com">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input label="Contraseña" labelPlacement="floating" type="password" [(ngModel)]="usuario.password"
+            placeholder="••••••••">
+          </ion-input>
+        </ion-item>
+
+        <ion-button expand="block" (click)="login()">
+          <ion-icon name="log-in-outline" slot="start"></ion-icon>
+          Iniciar Sesión
+        </ion-button>
+      </div>
+
+      <div class="quick-login-section">
+        <p>¿Solo quieres probar la app?</p>
+        <ion-button expand="block" fill="outline" (click)="quickLogin()">
+          <ion-icon name="flash-outline" slot="start"></ion-icon>
+          Acceso Rápido (Demo)
+        </ion-button>
+      </div>
+    </div>
+  </div>
 </ion-content>
