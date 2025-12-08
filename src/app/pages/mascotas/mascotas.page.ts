@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { SyncService, SyncState } from '../../services/sync.service';
+import { StorageService } from '../../services/storage.service';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
 import { addIcons } from 'ionicons';
@@ -57,13 +58,15 @@ export class MascotasPage {
   // Sincronización
   syncState: SyncState = { status: 'idle', lastSyncedAt: null, message: '' };
 
-  private key = 'kuichi_mascotas_v1';
+
+
 
   constructor(
     private toastCtrl: ToastController,
     private router: Router,
     @Inject(AuthService) private auth: AuthService,
-    private syncService: SyncService
+    private syncService: SyncService,
+    private storage: StorageService
   ) {
     addIcons({
       cameraOutline, locationOutline, mapOutline, paw, home, pricetag, logOut,
@@ -77,6 +80,11 @@ export class MascotasPage {
     this.syncService.syncState$.subscribe(state => {
       this.syncState = state;
     });
+
+    // Suscribirse a cambios de autenticación para recargar datos
+    this.auth.authState$.subscribe(user => {
+      this.load();
+    });
   }
 
   // getter para template: true si hay usuario autenticado
@@ -85,16 +93,22 @@ export class MascotasPage {
   }
 
   load() {
-    try {
-      const raw = localStorage.getItem(this.key);
-      this.mascotas = raw ? JSON.parse(raw) : [];
-    } catch {
+    const uid = this.auth.getCurrentUserId();
+    if (!uid) {
       this.mascotas = [];
+      return;
     }
+
+    const key = `kuichi_mascotas_${uid}`;
+    this.mascotas = this.storage.get<Mascota[]>(key) || [];
   }
 
   saveStore() {
-    localStorage.setItem(this.key, JSON.stringify(this.mascotas));
+    const uid = this.auth.getCurrentUserId();
+    if (uid) {
+      const key = `kuichi_mascotas_${uid}`;
+      this.storage.set(key, this.mascotas);
+    }
   }
 
   startCreate() {

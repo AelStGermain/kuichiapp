@@ -37,6 +37,20 @@ export class AuthService {
   }
 
   /**
+   * Obtiene el usuario actual (si existe)
+   */
+  public getCurrentUser(): User | null {
+    return this.auth.currentUser;
+  }
+
+  /**
+   * Obtiene el ID del usuario actual o null si no hay sesión
+   */
+  public getCurrentUserId(): string | null {
+    return this.auth.currentUser?.uid || null;
+  }
+
+  /**
    * Inicia sesión con correo y contraseña
    */
   async login(email: string, password: string): Promise<boolean> {

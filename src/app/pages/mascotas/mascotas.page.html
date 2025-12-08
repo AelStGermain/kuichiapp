@@ -205,7 +205,6 @@
   </div>
 
   <!-- SECCIÓN GPS Y VETERINARIAS -->
-  <!--
   <div class="veterinarias-section">
     <ion-card class="veterinarias-card">
       <ion-card-header class="vet-header">
@@ -215,13 +214,9 @@
         </ion-card-title>
         <ion-card-subtitle>Encuentra atención médica para tu mascota</ion-card-subtitle>
       </ion-card-header>
-      
+
       <ion-card-content>
-        <ion-button 
-          expand="block" 
-          color="success" 
-          (click)="obtenerUbicacion()" 
-          [disabled]="obteniendoUbicacion"
+        <ion-button expand="block" color="success" (click)="obtenerUbicacion()" [disabled]="obteniendoUbicacion"
           class="location-button">
           <ion-icon name="location" slot="start"></ion-icon>
           {{ obteniendoUbicacion ? 'Obteniendo ubicación...' : 'Buscar Veterinarias Cercanas' }}
@@ -249,28 +244,20 @@
                     <ion-label>{{ vet.distancia }} km</ion-label>
                   </ion-chip>
                 </div>
-                
+
                 <p class="vet-address">
                   <ion-icon name="location" color="medium"></ion-icon>
                   {{ vet.direccion }}
                 </p>
-                
+
                 <div class="vet-actions">
-                  <ion-button 
-                    *ngIf="vet.telefono" 
-                    fill="outline" 
-                    color="success" 
-                    size="small"
+                  <ion-button *ngIf="vet.telefono" fill="outline" color="success" size="small"
                     (click)="llamarVeterinaria(vet.telefono!)">
                     <ion-icon name="call" slot="start"></ion-icon>
                     Llamar
                   </ion-button>
-                  
-                  <ion-button 
-                    fill="outline" 
-                    color="primary" 
-                    size="small"
-                    (click)="abrirEnMaps(vet)">
+
+                  <ion-button fill="outline" color="primary" size="small" (click)="abrirEnMaps(vet)">
                     <ion-icon name="map" slot="start"></ion-icon>
                     Ver en Mapa
                   </ion-button>
@@ -282,5 +269,4 @@
       </ion-card-content>
     </ion-card>
   </div>
-  -->
 </ion-content>

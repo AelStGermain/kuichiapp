@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Mascota } from '../pages/mascotas/mascotas.page';
+import { StorageService } from './storage.service';
+import { AuthService } from './auth.service';
 
 export type SyncStatus = 'idle' | 'syncing' | 'success' | 'error';
 
@@ -16,6 +18,8 @@ export interface SyncState {
 })
 export class SyncService {
     private http = inject(HttpClient);
+    private storage = inject(StorageService);
+    private auth = inject(AuthService);
 
     private _syncState = new BehaviorSubject<SyncState>({
         status: 'idle',
@@ -29,7 +33,10 @@ export class SyncService {
     private apiUrl = 'https://jsonplaceholder.typicode.com';
 
     constructor() {
-        this.loadLastSyncTime();
+        // Suscribirse a cambios de auth para recargar timestamp
+        this.auth.authState$.subscribe(user => {
+            this.loadLastSyncTime();
+        });
     }
 
     /**
@@ -60,8 +67,12 @@ export class SyncService {
                 lastSyncedAt: Date.now()
             }));
 
-            // Guardar en localStorage
-            localStorage.setItem('kuichi_mascotas_v1', JSON.stringify(mascotasSincronizadas));
+            // Guardar en localStorage usando StorageService y clave de usuario
+            const uid = this.auth.getCurrentUserId();
+            if (uid) {
+                const key = `kuichi_mascotas_${uid}`;
+                this.storage.set(key, mascotasSincronizadas);
+            }
 
             const timestamp = Date.now();
             this.saveLastSyncTime(timestamp);
@@ -153,15 +164,23 @@ export class SyncService {
     }
 
     private saveLastSyncTime(timestamp: number): void {
-        localStorage.setItem('kuichi_last_sync', timestamp.toString());
+        const uid = this.auth.getCurrentUserId();
+        if (!uid) return;
+        this.storage.set(`kuichi_last_sync_${uid}`, timestamp);
     }
 
     private loadLastSyncTime(): void {
-        const stored = localStorage.getItem('kuichi_last_sync');
+        const uid = this.auth.getCurrentUserId();
+        if (!uid) {
+            this._syncState.next({ ...this._syncState.value, lastSyncedAt: null });
+            return;
+        }
+
+        const stored = this.storage.get<number>(`kuichi_last_sync_${uid}`);
         if (stored) {
             this._syncState.next({
                 ...this._syncState.value,
-                lastSyncedAt: parseInt(stored, 10)
+                lastSyncedAt: stored
             });
         }
     }
