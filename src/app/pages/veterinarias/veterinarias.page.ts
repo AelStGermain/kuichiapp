@@ -97,25 +97,34 @@ export class VeterinariasPage implements OnInit {
       return;
     }
 
-    if (this.isEditing && this.currentVeterinaria.id) {
-      // Actualizar
-      this.veterinariaService.updateVeterinaria(this.currentVeterinaria.id, this.currentVeterinaria);
-      await this.showToast('Veterinaria actualizada correctamente', 'success');
-    } else {
-      // Agregar nueva
-      const { id, ...newVet } = this.currentVeterinaria;
-      this.veterinariaService.addVeterinaria(newVet as Omit<Veterinaria, 'id'>);
-      await this.showToast('Veterinaria agregada correctamente', 'success');
-    }
+    try {
+      if (this.isEditing && this.currentVeterinaria.id) {
+        // Actualizar
+        await this.veterinariaService.updateVeterinaria(this.currentVeterinaria.id, this.currentVeterinaria);
+        await this.showToast('Veterinaria actualizada correctamente', 'success');
+      } else {
+        // Agregar nueva
+        // Firestore genera el ID, así que no necesitamos pasarlo si es undefined
+        const { id, ...newVet } = this.currentVeterinaria;
+        // Cast necesario porque el modelo tiene id opcional pero el servicio espera el objeto completo (menos id que es opcional)
+        await this.veterinariaService.addVeterinaria(newVet as Veterinaria);
+        await this.showToast('Veterinaria agregada correctamente', 'success');
+      }
 
-    // Cerrar modal y resetear
-    this.closeModal();
+      // Cerrar modal y resetear
+      this.closeModal();
+    } catch (error) {
+      console.error('Error al guardar:', error);
+      await this.showToast('Error al guardar la veterinaria', 'danger');
+    }
   }
 
   /**
    * Elimina una veterinaria con confirmación
    */
   async deleteVeterinaria(veterinaria: Veterinaria) {
+    if (!veterinaria.id) return;
+
     const alert = await this.alertController.create({
       header: 'Confirmar eliminación',
       message: `¿Estás seguro de que deseas eliminar "${veterinaria.nombre}"?`,
@@ -127,9 +136,16 @@ export class VeterinariasPage implements OnInit {
         {
           text: 'Eliminar',
           role: 'destructive',
-          handler: () => {
-            this.veterinariaService.deleteVeterinaria(veterinaria.id);
-            this.showToast('Veterinaria eliminada', 'danger');
+          handler: async () => {
+            try {
+              if (veterinaria.id) {
+                await this.veterinariaService.deleteVeterinaria(veterinaria.id);
+                this.showToast('Veterinaria eliminada', 'danger');
+              }
+            } catch (error) {
+              console.error('Error al eliminar:', error);
+              this.showToast('Error al eliminar la veterinaria', 'danger');
+            }
           }
         }
       ]

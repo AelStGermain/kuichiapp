@@ -1,34 +1,41 @@
-// src/app/app.component.ts (VERSION DE PRUEBA: SIN LÓGICA DE AUTH)
-
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+// src/app/app.component.ts
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
-// Eliminamos la dependencia de Router y AuthService temporalmente
+import { RouterModule, Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { addIcons } from 'ionicons';
+import { logOutOutline, personCircleOutline, homeOutline, pawOutline, medkitOutline, pricetagOutline, logInOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule, 
-    IonicModule, 
-    RouterModule // Necesario si el HTML usa routerLink
+    CommonModule,
+    IonicModule,
+    RouterModule
   ],
-  // Dejamos schemas por ahora, no molestan
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  
-  // Añadimos propiedades dummy para que el HTML no falle.
-  // 💡 Dejamos 'true' para forzar que los iconos de navegación/logout sean visibles.
-  isAuth: boolean = true; 
-  
+export class AppComponent implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  isAuth: boolean = false;
+
   constructor() {
-    // Si necesitas inicializar algo base, lo pones aquí.
+    addIcons({ logOutOutline, personCircleOutline, homeOutline, pawOutline, medkitOutline, pricetagOutline, logInOutline });
   }
-  
-  logout() {
-    console.log('Logout desactivado para prueba de renderizado.');
+
+  ngOnInit() {
+    this.authService.isAuthenticated$.subscribe(authState => {
+      this.isAuth = authState;
+    });
+  }
+
+  async logout() {
+    await this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

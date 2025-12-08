@@ -1,21 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonItem,
-  IonInput,
-  IonButton,
-  IonIcon,
-  AlertController
-} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
+  IonItem, IonInput, IonButton, IonIcon, IonText, IonSpinner
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { logIn, mail, lockClosed, informationCircle, flash, person, flashOutline, logInOutline } from 'ionicons/icons';
+import { logoGoogle, logInOutline, personOutline, lockClosedOutline } from 'ionicons/icons';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -25,49 +18,62 @@ import { logIn, mail, lockClosed, informationCircle, flash, person, flashOutline
   imports: [
     CommonModule,
     FormsModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonItem,
-    IonInput,
-    IonButton,
-    IonIcon,
-  ],
+    IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
+    IonItem, IonInput, IonButton, IonIcon, IonText, IonSpinner
+  ]
 })
 export class LoginPage {
   private authService = inject(AuthService);
   private router = inject(Router);
-  private activatedRoute = inject(ActivatedRoute);
-  private alertController = inject(AlertController);
 
-  usuario = { email: '', password: '' };
-  private redirectUrl: string | null = null;
+  // Estado del formulario
+  email = '';
+  password = '';
+  isLoading = false;
+  errorMessage = '';
 
   constructor() {
-    addIcons({ logIn, mail, lockClosed, informationCircle, flash, person, flashOutline, logInOutline });
-    this.activatedRoute.queryParamMap.subscribe(params => {
-      this.redirectUrl = params.get('redirect');
-    });
+    addIcons({ logoGoogle, logInOutline, personOutline, lockClosedOutline });
   }
 
   async login() {
-    const success = await this.authService.login(this.usuario.email, this.usuario.password);
-    if (success) {
-      this.router.navigateByUrl(this.redirectUrl || '/tabs/home');
-    } else {
-      const alert = await this.alertController.create({
-        header: 'Error de Acceso',
-        message: 'El email no es válido o no se encontró. Por favor, inténtalo de nuevo.',
-        buttons: ['OK'],
-      });
-      await alert.present();
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Por favor completa todos los campos.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    try {
+      const success = await this.authService.login(this.email, this.password);
+      if (success) {
+        this.router.navigate(['/tabs/home']);
+      } else {
+        this.errorMessage = 'Credenciales incorrectas.';
+      }
+    } catch (e) {
+      this.errorMessage = 'Ocurrió un error inesperado.';
+    } finally {
+      this.isLoading = false;
     }
   }
 
-  quickLogin() {
-    this.usuario.email = 'Sincere@april.biz';
-    this.usuario.password = 'password'; // La contraseña puede ser cualquiera
-    this.login();
+  async loginGoogle() {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    try {
+      const success = await this.authService.loginWithGoogle();
+      if (success) {
+        this.router.navigate(['/tabs/home']);
+      } else {
+        this.errorMessage = 'No se pudo iniciar sesión con Google.';
+      }
+    } catch (e) {
+      this.errorMessage = 'Error de conexión con Google.';
+    } finally {
+      this.isLoading = false;
+    }
   }
 }

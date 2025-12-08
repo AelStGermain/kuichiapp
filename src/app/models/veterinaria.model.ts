@@ -1,5 +1,5 @@
 export interface Veterinaria {
-  id: number;
+  id?: string;
   nombre: string;
   direccion: string;
   telefono: string;
