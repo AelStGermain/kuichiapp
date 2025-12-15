@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { Mascota } from '../pages/mascotas/mascotas.page';
 import { StorageService } from './storage.service';
 import { AuthService } from './auth.service';
+import { ApiService } from './api.service';
 
 export type SyncStatus = 'idle' | 'syncing' | 'success' | 'error';
 
@@ -20,6 +21,7 @@ export class SyncService {
     private http = inject(HttpClient);
     private storage = inject(StorageService);
     private auth = inject(AuthService);
+    private apiService = inject(ApiService);
 
     private _syncState = new BehaviorSubject<SyncState>({
         status: 'idle',
@@ -29,8 +31,8 @@ export class SyncService {
 
     public syncState$ = this._syncState.asObservable();
 
-    // API base URL - JSONPlaceholder para demostración
-    private apiUrl = 'https://jsonplaceholder.typicode.com';
+    // Configuración de backend
+    private useRealBackend = true; // Cambiar a false para usar simulación
 
     constructor() {
         // Suscribirse a cambios de auth para recargar timestamp
@@ -47,18 +49,25 @@ export class SyncService {
     }
 
     /**
-     * Sincroniza mascotas locales con el servidor
-     * En producción, esto enviaría los datos a tu backend
+     * Sincroniza mascotas locales con el servidor Spring Boot
      */
     async sincronizarMascotas(mascotas: Mascota[]): Promise<boolean> {
-        this.updateState('syncing', 'Sincronizando con servidor...');
+        this.updateState('syncing', 'Conectando con servidor...');
 
         try {
-            // Simular envío al servidor
-            // En producción: await this.http.post(`${this.apiUrl}/mascotas`, mascotas).toPromise();
+            if (this.useRealBackend) {
+                // USAR API REAL - Spring Boot backend
+                console.log('🚀 Sincronizando con backend Spring Boot...');
+                const response = await firstValueFrom(
+                    this.apiService.syncMascotas(mascotas)
+                );
 
-            // Por ahora, simulamos con un delay
-            await this.delay(1500);
+                console.log('✅ Respuesta del backend:', response);
+            } else {
+                // SIMULACIÓN (fallback si backend no está disponible)
+                console.log('⚠️ Usando modo simulación (backend desactivado)');
+                await this.delay(1500);
+            }
 
             // Marcar todas como sincronizadas
             const mascotasSincronizadas = mascotas.map(m => ({
@@ -76,12 +85,19 @@ export class SyncService {
 
             const timestamp = Date.now();
             this.saveLastSyncTime(timestamp);
-            this.updateState('success', `Sincronizado exitosamente (${mascotas.length} mascotas)`, timestamp);
+            this.updateState('success', `✅ Sincronizado exitosamente (${mascotas.length} mascotas)`, timestamp);
 
             return true;
-        } catch (error) {
-            console.error('Error en sincronización:', error);
-            this.updateState('error', 'Error al sincronizar con el servidor');
+        } catch (error: any) {
+            console.error('❌ Error en sincronización:', error);
+
+            // Si falla el backend real, intentar con simulación
+            if (this.useRealBackend && error.message?.includes('conectar al servidor')) {
+                console.warn('⚠️ Backend no disponible, usando modo offline');
+                this.updateState('error', '❌ Backend no disponible. Datos guardados localmente.');
+            } else {
+                this.updateState('error', '❌ Error al sincronizar con el servidor');
+            }
             return false;
         }
     }
@@ -93,8 +109,10 @@ export class SyncService {
         this.updateState('syncing', 'Importando desde API externa...');
 
         try {
-            // Obtener tareas desde JSONPlaceholder
-            const todos: any[] = await this.http.get<any[]>(`${this.apiUrl}/todos?_limit=5`).toPromise() || [];
+            // Obtener tareas desde JSONPlaceholder usando ApiService
+            const todos: any[] = await firstValueFrom(
+                this.apiService.getExternalData<any[]>('/todos?_limit=5')
+            );
 
             // Convertir tareas a mascotas
             const mascotasImportadas: Mascota[] = todos.map((todo, index) => ({
@@ -111,12 +129,12 @@ export class SyncService {
 
             const timestamp = Date.now();
             this.saveLastSyncTime(timestamp);
-            this.updateState('success', `${mascotasImportadas.length} mascotas importadas desde API`, timestamp);
+            this.updateState('success', `✅ ${mascotasImportadas.length} mascotas importadas desde API`, timestamp);
 
             return mascotasImportadas;
         } catch (error) {
-            console.error('Error al importar desde API:', error);
-            this.updateState('error', 'Error al importar desde API externa');
+            console.error('❌ Error al importar desde API:', error);
+            this.updateState('error', '❌ Error al importar desde API externa');
             return [];
         }
     }

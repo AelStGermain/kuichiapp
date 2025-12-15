@@ -4,8 +4,10 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { StorageService } from '../../services/storage.service';
 import { addIcons } from 'ionicons';
-import { pricetag, gift, flash, call, addCircle, documentText, add, trash, home, paw, logOut } from 'ionicons/icons';
+import { pricetag, gift, flash, call, addCircle, documentText, add, trash, home, paw, logOut, create, close, checkmark } from 'ionicons/icons';
+import { Observable } from 'rxjs';
 
 export interface Oferta {
   id: string;
@@ -28,7 +30,13 @@ export class OfertasPage {
   };
 
   ofertas: Oferta[] = [];
-  private key = 'kuichi_ofertas_v1';
+
+  // Estado de edición
+  editandoOferta: Oferta | null = null;
+  modoEdicion = false;
+
+  // Observable para verificar si el usuario es admin
+  isAdmin$: Observable<boolean>;
 
   // Iconos para las ofertas
   private ofertaIcons = [
@@ -42,48 +50,58 @@ export class OfertasPage {
   constructor(
     private toastCtrl: ToastController,
     private router: Router,
-    @Inject(AuthService) private auth: AuthService
+    @Inject(AuthService) private auth: AuthService,
+    private storage: StorageService
   ) {
-    addIcons({ pricetag, gift, flash, call, addCircle, documentText, add, trash, home, paw, logOut });
+    addIcons({ pricetag, gift, flash, call, addCircle, documentText, add, trash, home, paw, logOut, create, close, checkmark });
+    this.isAdmin$ = this.auth.isAdmin();
     this.loadOfertas();
   }
 
   private loadOfertas() {
-    try {
-      const stored = localStorage.getItem(this.key);
-      if (stored) {
-        this.ofertas = JSON.parse(stored);
-      } else {
-        // Ofertas por defecto solo la primera vez
-        this.ofertas = [
-          { 
-            id: '1',
-            titulo: 'Descuento en Vacunas 💉', 
-            descripcion: '20% de descuento en todas las vacunas durante este mes. Válido para perros y gatos.',
-            createdAt: Date.now() - 86400000 // 1 día atrás
-          },
-          { 
-            id: '2',
-            titulo: 'Control Dental Gratuito 🦷', 
-            descripcion: 'Revisión dental completa sin costo. Incluye limpieza básica y diagnóstico.',
-            createdAt: Date.now() - 172800000 // 2 días atrás
-          },
-          { 
-            id: '3',
-            titulo: 'Consulta de Emergencia 🚨', 
-            descripcion: 'Atención veterinaria de emergencia 24/7 con 15% de descuento.',
-            createdAt: Date.now() - 259200000 // 3 días atrás
-          }
-        ];
-        this.saveOfertas();
-      }
-    } catch {
+    const uid = this.auth.getCurrentUserId();
+    if (!uid) {
       this.ofertas = [];
+      return;
+    }
+
+    const key = `kuichi_ofertas_${uid}`;
+    const stored = this.storage.get<Oferta[]>(key);
+
+    if (stored && stored.length > 0) {
+      this.ofertas = stored;
+    } else {
+      // Ofertas por defecto solo la primera vez
+      this.ofertas = [
+        {
+          id: '1',
+          titulo: 'Descuento en Vacunas 💉',
+          descripcion: '20% de descuento en todas las vacunas durante este mes. Válido para perros y gatos.',
+          createdAt: Date.now() - 86400000
+        },
+        {
+          id: '2',
+          titulo: 'Control Dental Gratuito 🦷',
+          descripcion: 'Revisión dental completa sin costo. Incluye limpieza básica y diagnóstico.',
+          createdAt: Date.now() - 172800000
+        },
+        {
+          id: '3',
+          titulo: 'Consulta de Emergencia 🚨',
+          descripcion: 'Atención veterinaria de emergencia 24/7 con 15% de descuento.',
+          createdAt: Date.now() - 259200000
+        }
+      ];
+      this.saveOfertas();
     }
   }
 
   private saveOfertas() {
-    localStorage.setItem(this.key, JSON.stringify(this.ofertas));
+    const uid = this.auth.getCurrentUserId();
+    if (uid) {
+      const key = `kuichi_ofertas_${uid}`;
+      this.storage.set(key, this.ofertas);
+    }
   }
 
   async agregarOferta() {
@@ -92,19 +110,50 @@ export class OfertasPage {
       return;
     }
 
-    const nuevaOferta: Oferta = {
-      id: Date.now().toString(),
-      titulo: this.nuevaOferta.titulo,
-      descripcion: this.nuevaOferta.descripcion,
-      createdAt: Date.now()
-    };
+    if (this.modoEdicion && this.editandoOferta) {
+      // MODO EDICIÓN
+      const index = this.ofertas.findIndex(o => o.id === this.editandoOferta!.id);
+      if (index > -1) {
+        this.ofertas[index] = {
+          ...this.editandoOferta,
+          titulo: this.nuevaOferta.titulo,
+          descripcion: this.nuevaOferta.descripcion
+        };
+        await this.showToast('¡Oferta actualizada exitosamente!', 'success');
+      }
+      this.modoEdicion = false;
+      this.editandoOferta = null;
+    } else {
+      // MODO CREACIÓN
+      const nuevaOferta: Oferta = {
+        id: Date.now().toString(),
+        titulo: this.nuevaOferta.titulo,
+        descripcion: this.nuevaOferta.descripcion,
+        createdAt: Date.now()
+      };
+      this.ofertas.unshift(nuevaOferta);
+      await this.showToast('¡Oferta publicada exitosamente!', 'success');
+    }
 
-    this.ofertas.unshift(nuevaOferta);
     this.nuevaOferta = { titulo: '', descripcion: '' };
     this.saveOfertas();
-    
-    await this.showToast('¡Oferta publicada exitosamente!', 'success');
     this.scrollToTop();
+  }
+
+  iniciarEdicion(oferta: Oferta) {
+    this.editandoOferta = oferta;
+    this.modoEdicion = true;
+    this.nuevaOferta = {
+      titulo: oferta.titulo,
+      descripcion: oferta.descripcion
+    };
+    this.scrollToForm();
+  }
+
+  cancelarEdicion() {
+    this.modoEdicion = false;
+    this.editandoOferta = null;
+    this.nuevaOferta = { titulo: '', descripcion: '' };
   }
 
   async confirmarEliminar(oferta: Oferta) {
@@ -124,7 +173,7 @@ export class OfertasPage {
         }
       }
     ];
-    
+
     document.body.appendChild(alert);
     await alert.present();
   }

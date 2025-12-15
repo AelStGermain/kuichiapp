@@ -83,3 +83,29 @@ ion-content {
   --color: #333;
   --border-color: #ddd;
 }
+
+.test-users {
+  margin-top: 30px;
+  padding: 15px;
+  background: #f0f9ff;
+  border-radius: 12px;
+  border-left: 4px solid var(--ion-color-primary);
+
+  .test-users-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    margin: 0 0 10px 0;
+  }
+
+  .test-user-item {
+    font-size: 0.8rem;
+    color: #555;
+    margin: 5px 0;
+    font-family: 'Courier New', monospace;
+
+    strong {
+      color: var(--ion-color-primary);
+    }
+  }
+}

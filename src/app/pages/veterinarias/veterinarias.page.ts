@@ -10,9 +10,11 @@ import {
 } from '@ionic/angular/standalone';
 import { Veterinaria } from '../../models/veterinaria.model';
 import { VeterinariaService } from '../../services/veterinaria.service';
+import { AuthService } from '../../services/auth.service';
 import { SanitizePipe } from '../../pipes/sanitize.pipe';
 import { addIcons } from 'ionicons';
 import { add, create, trash, map, call, locationOutline, timeOutline, close, checkmark, medicalOutline } from 'ionicons/icons';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-veterinarias',
@@ -34,6 +36,9 @@ export class VeterinariasPage implements OnInit {
   public isEditing = false;
   public currentVeterinaria: Partial<Veterinaria> = {};
 
+  // Observable para verificar si el usuario es admin
+  public isAdmin$: Observable<boolean>;
+
   // Coordenadas de Santiago para el mapa
   public santiagoLat = -33.4489;
   public santiagoLng = -70.6693;
@@ -41,9 +46,11 @@ export class VeterinariasPage implements OnInit {
   constructor(
     private veterinariaService: VeterinariaService,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private auth: AuthService
   ) {
     addIcons({ add, create, trash, map, call, locationOutline, timeOutline, close, checkmark, medicalOutline });
+    this.isAdmin$ = this.auth.isAdmin();
   }
 
   ngOnInit() {
