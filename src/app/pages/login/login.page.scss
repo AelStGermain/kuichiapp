@@ -1,5 +1,6 @@
 ion-content {
   --background: linear-gradient(160deg, #effaf2 0%, #f8f6ef 55%, #ffffff 100%);
+  --overflow: hidden;
 }
 
 .login-wrapper {
@@ -7,23 +8,26 @@ ion-content {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100%;
-  padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+  height: 100%;
+  min-height: 0;
+  padding: max(12px, env(safe-area-inset-top)) 16px max(12px, env(safe-area-inset-bottom));
+  overflow: hidden;
 }
 
 .brand-section {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 
   .brand-logo {
-    width: 148px;
-    height: auto;
+    width: 66px;
+    height: 66px;
+    object-fit: contain;
   }
 
   p {
     color: #607066;
-    font-size: 1rem;
-    margin: 6px 0 0;
+    font-size: .78rem;
+    margin: 2px 0 0;
   }
 }
 
@@ -37,27 +41,26 @@ ion-content {
 }
 
 .demo-intro {
-  padding: 6px 2px 8px;
+  padding: 0 2px;
 
   .eyebrow {
     color: #357a49;
-    font-size: .72rem;
+    font-size: .62rem;
     font-weight: 800;
     letter-spacing: .12em;
   }
 
   h1 {
     color: #193c26;
-    font-size: 1.85rem;
+    font-size: 1.32rem;
     letter-spacing: -.035em;
     line-height: 1.08;
-    margin: 10px 0;
+    margin: 5px 0 3px;
   }
 
   p {
     color: #607066;
-    line-height: 1.5;
-    margin: 0 0 20px;
+    display: none;
   }
 }
 
@@ -65,16 +68,16 @@ ion-content {
   --background: #2f7d4a;
   --background-hover: #286a3f;
   --border-radius: 14px;
-  height: 52px;
+  height: 42px;
   font-weight: 700;
 }
 
 .error-banner {
   background: var(--ion-color-danger-tint);
   color: var(--ion-color-danger);
-  padding: 10px;
+  padding: 8px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   text-align: center;
   font-size: .9rem;
 }
@@ -83,23 +86,24 @@ ion-content {
   --background: #f6f8f6;
   --border-radius: 12px;
   --padding-start: 15px;
-  margin-bottom: 12px;
+  min-height: 50px;
+  margin-bottom: 6px;
   border-radius: 12px;
 }
 
 .actions {
-  margin-top: 20px;
+  margin-top: 8px;
 }
 
 .main-btn,
 .google-btn {
   --border-radius: 12px;
-  height: 48px;
+  height: 42px;
   font-weight: 600;
 }
 
 .main-btn {
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .google-btn {
@@ -112,8 +116,8 @@ ion-content {
   align-items: center;
   gap: 12px;
   color: #7b887f;
-  margin: 24px 0 18px;
-  font-size: .85rem;
+  margin: 10px 0 8px;
+  font-size: .72rem;
 
   &::before,
   &::after {
