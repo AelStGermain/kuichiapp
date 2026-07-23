@@ -1,6 +1,6 @@
 // src/app/home/home.page.ts
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -48,6 +48,7 @@ import { AuthService } from '../services/auth.service';
   ],
 })
 export class HomePage implements OnInit {
+  @ViewChild(IonContent) private content?: IonContent;
 
   // Inyección de dependencias
   private router = inject(Router);
@@ -81,6 +82,11 @@ export class HomePage implements OnInit {
     });
     // Obtiene la ruta actual para la lógica condicional del Login/Logout
     this.currentPath = this.router.url;
+  }
+
+  ionViewWillEnter() {
+    this.loadStatistics();
+    requestAnimationFrame(() => this.content?.scrollToTop(0));
   }
 
   /**

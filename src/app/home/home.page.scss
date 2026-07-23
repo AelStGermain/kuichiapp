@@ -7,8 +7,9 @@ ion-toolbar {
 
 .navbar-logo {
   display: block;
-  width: 92px;
-  height: auto;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
 
 .home-content {
@@ -121,6 +122,12 @@ ion-toolbar {
   border-radius: 18px;
   background: #fff;
   box-shadow: 0 4px 14px rgba(31, 58, 39, .06);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid rgba(47, 125, 74, .28);
+    outline-offset: 2px;
+  }
 }
 
 .action-icon {

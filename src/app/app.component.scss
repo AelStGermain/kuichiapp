@@ -95,9 +95,10 @@ ion-app {
 
   .device-shell {
     box-sizing: border-box;
-    width: min(390px, 35vw);
-    height: min(720px, calc(100dvh - 170px));
-    min-height: 500px;
+    width: auto;
+    height: min(690px, calc(100dvh - 200px));
+    min-height: 480px;
+    aspect-ratio: 9 / 19.5;
     padding: 11px;
     overflow: visible;
     border: 1px solid #30353a;
@@ -259,8 +260,8 @@ ion-app {
     align-items: center;
     justify-content: center;
     gap: 7px;
-    min-height: 28px;
-    margin-top: 6px;
+    min-height: 24px;
+    margin-top: 2px;
     color: #748078;
     font-size: .78rem;
 
@@ -288,7 +289,7 @@ ion-app {
 
   .device-shell {
     min-height: 460px;
-    height: calc(100dvh - 126px);
+    height: calc(100dvh - 150px);
   }
 
   .product-story {
@@ -304,7 +305,7 @@ ion-app {
   }
 
   .device-shell {
-    height: calc(100dvh - 68px);
+    height: calc(100dvh - 82px);
     min-height: 430px;
   }
 
