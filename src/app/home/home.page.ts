@@ -21,8 +21,6 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonChip,
-  IonLabel,
 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -59,8 +57,6 @@ import { AuthService } from '../services/auth.service';
     IonGrid,
     IonRow,
     IonCol,
-    IonChip,
-    IonLabel,
   ],
 })
 export class HomePage implements OnInit {
@@ -104,16 +100,17 @@ export class HomePage implements OnInit {
    */
   loadStatistics() {
     try {
+      const uid = this.authService.getCurrentUserId();
+      if (!uid) return;
       // Cargar mascotas
-      const mascotasData = localStorage.getItem('kuichi_mascotas_v1');
+      const mascotasData = localStorage.getItem(`kuichi_mascotas_${uid}`);
       this.totalMascotas = mascotasData ? JSON.parse(mascotasData).length : 0;
 
       // Cargar veterinarias
-      const veterinariasData = localStorage.getItem('kuichi_veterinarias_v1');
-      this.totalVeterinarias = veterinariasData ? JSON.parse(veterinariasData).length : 0;
+      this.totalVeterinarias = 4;
 
       // Cargar ofertas (asumiendo que existe un storage similar)
-      const ofertasData = localStorage.getItem('kuichi_ofertas_v1');
+      const ofertasData = localStorage.getItem(`kuichi_ofertas_${uid}`);
       this.totalOfertas = ofertasData ? JSON.parse(ofertasData).length : 0;
     } catch (error) {
       console.error('Error al cargar estadísticas:', error);

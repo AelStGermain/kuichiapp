@@ -5,7 +5,7 @@ import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard,
   IonCardHeader, IonCardTitle, IonCardContent, IonButtons, IonBackButton,
   IonSpinner, IonIcon, IonLabel, IonChip, IonButton, IonFab, IonFabButton,
-  IonModal, IonInput, IonTextarea, IonSelect, IonSelectOption, IonItem,
+  IonModal, IonInput, IonSelect, IonSelectOption, IonItem,
   ToastController, AlertController
 } from '@ionic/angular/standalone';
 import { Veterinaria } from '../../models/veterinaria.model';
@@ -25,13 +25,34 @@ import { Observable } from 'rxjs';
     IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule,
     IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButtons,
     IonBackButton, IonSpinner, IonIcon, IonLabel, IonChip, IonButton, IonFab,
-    IonFabButton, IonModal, IonInput, IonTextarea, IonSelect, IonSelectOption, IonItem,
+    IonFabButton, IonModal, IonInput, IonSelect, IonSelectOption, IonItem,
     SanitizePipe
   ]
 })
 export class VeterinariasPage implements OnInit {
 
-  public veterinarias: Veterinaria[] = [];
+  public veterinarias: Veterinaria[] = [
+    {
+      id: 'demo-providencia',
+      nombre: 'Clínica Veterinaria Providencia',
+      direccion: 'Av. Providencia 1844, Santiago',
+      telefono: '+56 2 2235 4120',
+      horario: 'Lun a sáb · 09:00–20:00',
+      especialidades: ['perros', 'gatos'],
+      latitud: -33.4265,
+      longitud: -70.6146
+    },
+    {
+      id: 'demo-nunoa',
+      nombre: 'Centro Veterinario Ñuñoa',
+      direccion: 'Av. Irarrázaval 3120, Ñuñoa',
+      telefono: '+56 2 2274 8890',
+      horario: 'Todos los días · 08:00–22:00',
+      especialidades: ['perros', 'gatos', 'exoticos'],
+      latitud: -33.4534,
+      longitud: -70.5953
+    }
+  ];
   public isModalOpen = false;
   public isEditing = false;
   public currentVeterinaria: Partial<Veterinaria> = {};
@@ -54,8 +75,11 @@ export class VeterinariasPage implements OnInit {
   }
 
   ngOnInit() {
-    this.veterinariaService.getVeterinarias().subscribe(data => {
-      this.veterinarias = data;
+    this.veterinariaService.getVeterinarias().subscribe({
+      next: data => {
+        if (data.length > 0) this.veterinarias = data;
+      },
+      error: error => console.warn('Se muestran veterinarias de demostración.', error)
     });
   }
 
@@ -198,4 +222,3 @@ export class VeterinariasPage implements OnInit {
     this.currentVeterinaria.especialidades = event.detail.value;
   }
 }
-

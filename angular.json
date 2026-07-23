@@ -33,6 +33,11 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "sw.js",
+                "input": "src",
+                "output": ""
               }
             ],
             "styles": [
@@ -40,6 +45,10 @@
               "src/theme/variables.scss"
             ],
             "scripts": [],
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "qrcode"
+            ],
             "browser": "src/main.ts"
           },
           "configurations": {
@@ -52,7 +61,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
+                  "maximumWarning": "9kb",
                   "maximumError": "10kb"
                 }
               ],

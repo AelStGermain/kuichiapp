@@ -67,7 +67,7 @@ ion-title {
 /* === ESTILOS DEL DASHBOARD === */
 .home-content {
     --background: transparent;
-    background-image: url('/assets/images/home-bg.png');
+    background-image: url('../../assets/images/home-bg.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -193,6 +193,24 @@ ion-title {
         color: #333;
         font-weight: bold;
         text-align: center;
+    }
+}
+
+.creator-credit {
+    margin: 28px 0 0;
+    text-align: center;
+    color: #667269;
+    font-size: 12px;
+
+    a {
+        color: #2f7042;
+        font-weight: 700;
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible {
+            text-decoration: underline;
+        }
     }
 }
 

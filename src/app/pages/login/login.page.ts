@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
-  IonItem, IonInput, IonButton, IonIcon, IonText, IonSpinner
+  IonContent, IonCard, IonCardContent,
+  IonItem, IonInput, IonButton, IonIcon, IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { logoGoogle, logInOutline, personOutline, lockClosedOutline } from 'ionicons/icons';
+import { logoGoogle, logInOutline, personOutline, lockClosedOutline, arrowForwardOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -18,8 +18,8 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     CommonModule,
     FormsModule,
-    IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
-    IonItem, IonInput, IonButton, IonIcon, IonText, IonSpinner
+    IonContent, IonCard, IonCardContent,
+    IonItem, IonInput, IonButton, IonIcon, IonSpinner
   ]
 })
 export class LoginPage {
@@ -33,7 +33,12 @@ export class LoginPage {
   errorMessage = '';
 
   constructor() {
-    addIcons({ logoGoogle, logInOutline, personOutline, lockClosedOutline });
+    addIcons({ logoGoogle, logInOutline, personOutline, lockClosedOutline, arrowForwardOutline });
+  }
+
+  enterDemo() {
+    this.authService.loginAsDemo();
+    this.router.navigate(['/tabs/home']);
   }
 
   async login() {

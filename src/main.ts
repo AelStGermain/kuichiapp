@@ -44,4 +44,10 @@ bootstrapApplication(AppComponent, {
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
   ],
+}).then(() => {
+  if (environment.production && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(error => {
+      console.warn('No se pudo registrar el modo offline.', error);
+    });
+  }
 });

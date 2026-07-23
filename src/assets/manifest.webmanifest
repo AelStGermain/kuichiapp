@@ -1,0 +1,27 @@
+{
+  "name": "Kuichi — Cuidado de mascotas",
+  "short_name": "Kuichi",
+  "description": "Perfiles, salud, veterinarias y beneficios para tus mascotas.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#effaf2",
+  "theme_color": "#2f7d4a",
+  "lang": "es-CL",
+  "categories": ["lifestyle", "medical"],
+  "icons": [
+    {
+      "src": "images/kuichi_logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/kuichi_logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

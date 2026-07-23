@@ -1,11 +1,10 @@
 {
-  "name": "kuichi",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "name": "kuichi-mobile",
+  "version": "1.0.0",
+  "author": "Fupbi",
   "scripts": {
     "ng": "ng",
-    "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve",
+    "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -35,6 +34,7 @@
     "crypto-js": "^4.2.0",
     "firebase": "^12.6.0",
     "ionicons": "^8.0.13",
+    "qrcode": "^1.5.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -54,6 +54,7 @@
     "@types/crypto-js": "^4.2.2",
     "@types/jasmine": "~5.1.0",
     "@types/jest": "^30.0.0",
+    "@types/qrcode": "^1.5.5",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "appium": "^2.19.0",
@@ -74,5 +75,5 @@
     "typescript": "~5.8.0",
     "webdriverio": "^9.21.0"
   },
-  "description": "An Ionic project"
+  "description": "Aplicación móvil para organizar el cuidado de mascotas y descubrir servicios cercanos."
 }

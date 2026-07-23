@@ -8,8 +8,9 @@ import { SyncService, SyncState } from '../../services/sync.service';
 import { StorageService } from '../../services/storage.service';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
+import QRCode from 'qrcode';
 import { addIcons } from 'ionicons';
-import { cameraOutline, locationOutline, mapOutline, paw, home, pricetag, logOut, add, create, checkmark, close, fish, time, documentText, camera, heart, medical, call, map, checkmarkCircle, trash, images, cloudUpload, cloudDownload, sync, cloudDone } from 'ionicons/icons';
+import { cameraOutline, locationOutline, mapOutline, paw, home, pricetag, logOut, add, create, checkmark, close, fish, time, documentText, camera, heart, medical, call, map, checkmarkCircle, trash, images, cloudUpload, cloudDownload, sync, cloudDone, qrCodeOutline, shareSocialOutline, alertCircleOutline, shieldCheckmarkOutline, calendarOutline } from 'ionicons/icons';
 
 export type Mascota = {
   id: string;
@@ -17,6 +18,9 @@ export type Mascota = {
   especie: string;
   edad?: string;
   notas?: string;
+  vacunasAlDia?: boolean;
+  proximoControl?: string;
+  perdida?: boolean;
   createdAt: number;
   foto?: string;
   syncStatus?: 'pending' | 'synced' | 'error';
@@ -45,6 +49,8 @@ export class MascotasPage {
   form: Partial<Mascota> = {};
   editingId: string | null = null;
   showForm = false;
+  expandedPassportId: string | null = null;
+  passportQr: Record<string, string> = {};
 
   // Cámara
   fotoCapturada: string | undefined;
@@ -73,6 +79,7 @@ export class MascotasPage {
       add, create, checkmark, close, fish, time, documentText, camera, heart,
       medical, call, map, checkmarkCircle, trash, images, cloudUpload, cloudDownload,
       sync, cloudDone
+      , qrCodeOutline, shareSocialOutline, alertCircleOutline, shieldCheckmarkOutline, calendarOutline
     });
     this.load();
 
@@ -100,7 +107,27 @@ export class MascotasPage {
     }
 
     const key = `kuichi_mascotas_${uid}`;
-    this.mascotas = this.storage.get<Mascota[]>(key) || [];
+    const stored = this.storage.get<Mascota[]>(key);
+    if (stored) {
+      this.mascotas = stored;
+      return;
+    }
+
+    this.mascotas = this.auth.isDemoSession() ? [
+      {
+        id: 'demo-luna',
+        nombre: 'Luna',
+        especie: 'Perro',
+        edad: '4 años',
+        notas: 'Vacunas al día · Próximo control en agosto',
+        vacunasAlDia: true,
+        proximoControl: '2026-08-18',
+        foto: 'assets/images/hero-dog.png',
+        createdAt: Date.now() - 86400000,
+        syncStatus: 'synced'
+      }
+    ] : [];
+    this.saveStore();
   }
 
   saveStore() {
@@ -114,7 +141,7 @@ export class MascotasPage {
   startCreate() {
     this.editingId = null;
     this.showForm = true;
-    this.form = { nombre: '', especie: '', edad: '', notas: '' };
+    this.form = { nombre: '', especie: '', edad: '', notas: '', vacunasAlDia: false, proximoControl: '' };
     this.fotoCapturada = undefined;
     this.scrollToTop();
   }
@@ -171,6 +198,8 @@ export class MascotasPage {
           especie: this.form.especie!,
           edad: this.form.edad || '',
           notas: this.form.notas || '',
+          vacunasAlDia: !!this.form.vacunasAlDia,
+          proximoControl: this.form.proximoControl || '',
           foto: this.fotoCapturada || this.mascotas[i].foto,
           createdAt: this.mascotas[i].createdAt,
         };
@@ -184,6 +213,8 @@ export class MascotasPage {
         especie: this.form.especie!,
         edad: this.form.edad || '',
         notas: this.form.notas || '',
+        vacunasAlDia: !!this.form.vacunasAlDia,
+        proximoControl: this.form.proximoControl || '',
         foto: this.fotoCapturada,
         createdAt: Date.now(),
       };
@@ -201,9 +232,61 @@ export class MascotasPage {
   edit(m: Mascota) {
     this.editingId = m.id;
     this.showForm = true;
-    this.form = { nombre: m.nombre, especie: m.especie, edad: m.edad, notas: m.notas };
+    this.form = {
+      nombre: m.nombre,
+      especie: m.especie,
+      edad: m.edad,
+      notas: m.notas,
+      vacunasAlDia: m.vacunasAlDia,
+      proximoControl: m.proximoControl
+    };
     this.fotoCapturada = m.foto;
     this.scrollToTop();
+  }
+
+  async togglePassport(mascota: Mascota) {
+    if (this.expandedPassportId === mascota.id) {
+      this.expandedPassportId = null;
+      return;
+    }
+
+    this.expandedPassportId = mascota.id;
+    if (!this.passportQr[mascota.id]) {
+      this.passportQr[mascota.id] = await QRCode.toDataURL(this.getPassportText(mascota), {
+        width: 220,
+        margin: 1,
+        color: { dark: '#193c26', light: '#ffffff' }
+      });
+    }
+  }
+
+  async toggleLostMode(mascota: Mascota) {
+    mascota.perdida = !mascota.perdida;
+    this.saveStore();
+    await this.showToast(
+      mascota.perdida ? `Modo mascota perdida activado para ${mascota.nombre}` : 'Alerta desactivada',
+      mascota.perdida ? 'warning' : 'success'
+    );
+  }
+
+  async sharePassport(mascota: Mascota) {
+    const text = this.getPassportText(mascota);
+    if (navigator.share) {
+      await navigator.share({ title: `Pasaporte de ${mascota.nombre}`, text });
+      return;
+    }
+
+    await navigator.clipboard.writeText(text);
+    await this.showToast('Pasaporte copiado para compartir', 'success');
+  }
+
+  private getPassportText(mascota: Mascota): string {
+    const estado = mascota.perdida
+      ? `ALERTA: ${mascota.nombre} está perdida. Si la encuentras, contacta a su familia desde Kuichi.`
+      : `${mascota.nombre} cuenta con un pasaporte digital Kuichi.`;
+    const vacunas = mascota.vacunasAlDia ? 'Vacunas al día' : 'Vacunas por revisar';
+    const control = mascota.proximoControl ? `Próximo control: ${mascota.proximoControl}` : 'Sin próximo control registrado';
+    return `${estado}\nEspecie: ${mascota.especie}\n${vacunas}\n${control}\nID: KUICHI-${mascota.id.toUpperCase()}`;
   }
 
   remove(id: string) {

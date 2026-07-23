@@ -34,7 +34,8 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* La demo mantiene una identidad visual consistente; el modo oscuro puede
+ * incorporarse más adelante con una paleta diseñada específicamente. */
 
 /* === TEMA VERDE KUICHI === */
 :root {
@@ -96,8 +97,7 @@ ion-header ion-toolbar ion-buttons ion-button {
 
 /* Máxima especificidad para iconos - asegurar visibilidad */
 ion-header ion-toolbar ion-buttons ion-button ion-icon,
-ion-toolbar ion-buttons ion-icon,
-ion-icon {
+ion-toolbar ion-buttons ion-icon {
   color: white !important;
   font-size: 24px !important;
   --ionicon-stroke-width: 32px !important;

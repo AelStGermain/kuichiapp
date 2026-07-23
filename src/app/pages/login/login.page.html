@@ -1,62 +1,61 @@
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true">
   <div class="login-wrapper">
-
     <div class="brand-section">
-      <h1>Kuichi</h1>
-      <p>Cuidado inteligente para tu mascota</p>
+      <img src="assets/images/kuichi_logo.png" alt="Kuichi" class="brand-logo">
+      <p>Todo lo que tu mascota necesita, en un solo lugar.</p>
     </div>
 
     <ion-card class="auth-card">
       <ion-card-content>
+        <div class="demo-intro">
+          <span class="eyebrow">EXPLORA KUICHI</span>
+          <h1>El cuidado diario, más simple</h1>
+          <p>Organiza la información de tus mascotas, encuentra atención cercana y revisa beneficios.</p>
+          <ion-button expand="block" (click)="enterDemo()" class="demo-btn">
+            Ver demostración
+            <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+          </ion-button>
+        </div>
 
-        <!-- Mensaje de Error -->
-        <div *ngIf="errorMessage" class="error-banner">
+        <div class="divider"><span>o ingresa a tu cuenta</span></div>
+
+        <div *ngIf="errorMessage" class="error-banner" role="alert">
           {{ errorMessage }}
         </div>
 
-        <!-- Formulario -->
         <div class="form-group">
           <ion-item lines="none" class="custom-input">
             <ion-icon slot="start" name="person-outline" color="medium"></ion-icon>
-            <ion-input [(ngModel)]="email" type="email" placeholder="Correo electrónico" label="Email"
-              labelPlacement="stacked"></ion-input>
+            <ion-input [(ngModel)]="email" type="email" autocomplete="email"
+              label="Correo electrónico" labelPlacement="stacked"></ion-input>
           </ion-item>
 
           <ion-item lines="none" class="custom-input">
             <ion-icon slot="start" name="lock-closed-outline" color="medium"></ion-icon>
-            <ion-input [(ngModel)]="password" type="password" placeholder="Contraseña" label="Contraseña"
-              labelPlacement="stacked"></ion-input>
+            <ion-input [(ngModel)]="password" type="password" autocomplete="current-password"
+              label="Contraseña" labelPlacement="stacked"></ion-input>
           </ion-item>
         </div>
 
-        <!-- Botones -->
         <div class="actions">
           <ion-button expand="block" (click)="login()" [disabled]="isLoading" class="main-btn">
             <span *ngIf="!isLoading">Ingresar</span>
             <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
           </ion-button>
 
-          <div class="divider">o</div>
-
           <ion-button expand="block" fill="outline" (click)="loginGoogle()" [disabled]="isLoading" class="google-btn">
             <ion-icon slot="start" name="logo-google"></ion-icon>
             Continuar con Google
           </ion-button>
         </div>
-
-        <!-- Usuarios de Prueba -->
-        <div class="test-users">
-          <p class="test-users-title">👥 Usuarios de Prueba:</p>
-          <div class="test-user-item">
-            <strong>👑 Admin:</strong> admin@kuichi.com / admin123
-          </div>
-          <div class="test-user-item">
-            <strong>👤 User:</strong> user@kuichi.com / user123
-          </div>
-        </div>
-
       </ion-card-content>
     </ion-card>
 
+    <p class="creator-credit">
+      Creado por
+      <a href="https://github.com/AelStGermain" target="_blank" rel="noopener noreferrer">
+        Sofía Gómez
+      </a>
+    </p>
   </div>
 </ion-content>

@@ -497,3 +497,202 @@ ion-fab-button {
     }
   }
 }
+/* Resumen clínico compacto dentro de la ficha de cada mascota */
+.health-fields {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.health-toggle {
+  --background: #f3f8f4;
+  --border-radius: 12px;
+  border-radius: 12px;
+}
+
+.health-summary {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(47, 125, 74, .14);
+}
+
+.health-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #357a49;
+  font-size: .86rem;
+  font-weight: 600;
+
+  ion-icon {
+    color: #357a49 !important;
+    font-size: 19px !important;
+  }
+
+  &.is-pending {
+    color: #a15c18;
+
+    ion-icon {
+      color: #a15c18 !important;
+    }
+  }
+}
+
+.lost-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px;
+  background: #c97122;
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+
+  ion-icon {
+    color: #fff !important;
+    font-size: 20px !important;
+  }
+}
+
+.passport-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+
+  ion-button {
+    margin: 0;
+    min-height: 42px;
+    font-size: .72rem;
+  }
+}
+
+.digital-passport {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid rgba(47, 125, 74, .2);
+  border-radius: 16px;
+  background: linear-gradient(145deg, #f3faf5, #fff);
+}
+
+.passport-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #193c26;
+
+  span {
+    color: #4f765b;
+    font-size: .65rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+  }
+
+  h4 {
+    margin: 3px 0 0;
+    font-size: 1.35rem;
+  }
+
+  > ion-icon {
+    color: #2f7d4a !important;
+    font-size: 32px !important;
+  }
+}
+
+.passport-body {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 14px;
+  align-items: center;
+  margin: 16px 0;
+
+  img {
+    width: 96px;
+    border-radius: 8px;
+  }
+}
+
+.passport-data p {
+  margin: 0 0 7px;
+  color: #536259;
+  font-size: .78rem;
+
+  strong {
+    display: block;
+    color: #193c26;
+    font-size: .65rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+}
+
+.health-timeline {
+  margin: 18px 0;
+
+  h5 {
+    margin: 0 0 12px;
+    color: #193c26;
+    font-size: .9rem;
+  }
+}
+
+.timeline-event {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 9px;
+  padding-bottom: 14px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 22px;
+    bottom: 0;
+    left: 10px;
+    width: 2px;
+    background: #dbe7de;
+  }
+
+  &:last-child::after {
+    display: none;
+  }
+
+  ion-icon {
+    color: #5f7465 !important;
+    font-size: 21px !important;
+  }
+
+  strong,
+  span {
+    display: block;
+  }
+
+  strong {
+    color: #2f4335;
+    font-size: .8rem;
+  }
+
+  span {
+    margin-top: 2px;
+    color: #768179;
+    font-size: .72rem;
+  }
+
+  &.completed ion-icon {
+    color: #2f7d4a !important;
+  }
+
+  &.upcoming ion-icon {
+    color: #c97122 !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .passport-actions {
+    grid-template-columns: 1fr;
+  }
+}

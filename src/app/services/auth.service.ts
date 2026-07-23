@@ -1,7 +1,7 @@
 // src/app/services/auth.service.ts
 import { Injectable, inject } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, signOut, authState, User as FirebaseUser, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from '@angular/fire/auth';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { User, UserRole } from '../models/user.model';
@@ -10,6 +10,8 @@ import { User, UserRole } from '../models/user.model';
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly demoSessionKey = 'kuichi_demo_session';
+  private readonly demoUserId = 'demo-user';
   private auth: Auth = inject(Auth);
   private userService = inject(UserService);
 
@@ -18,7 +20,13 @@ export class AuthService {
 
   // Mantenemos el BehaviorSubject para compatibilidad con el código existente que espera un booleano síncrono (aunque es mejor usar el observable)
   private _isAuthenticated = new BehaviorSubject<boolean>(false);
-  public isAuthenticated$ = this._isAuthenticated.asObservable();
+  private _isDemo = new BehaviorSubject<boolean>(
+    typeof localStorage !== 'undefined' && localStorage.getItem(this.demoSessionKey) === 'true'
+  );
+  public isAuthenticated$ = combineLatest([
+    this._isAuthenticated.asObservable(),
+    this._isDemo.asObservable()
+  ]).pipe(map(([firebaseAuth, demoAuth]) => firebaseAuth || demoAuth));
 
   private authSubscription: Subscription;
 
@@ -36,7 +44,40 @@ export class AuthService {
    * Se recomienda migrar los Guards a usar authState$ directamente.
    */
   public isAuthenticated(): boolean {
-    return this._isAuthenticated.value;
+    return this._isAuthenticated.value || this._isDemo.value;
+  }
+
+  public isDemoSession(): boolean {
+    return this._isDemo.value;
+  }
+
+  public loginAsDemo(): void {
+    const now = Date.now();
+    localStorage.setItem(this.demoSessionKey, 'true');
+    if (!localStorage.getItem(`kuichi_mascotas_${this.demoUserId}`)) {
+      localStorage.setItem(`kuichi_mascotas_${this.demoUserId}`, JSON.stringify([
+        {
+          id: 'demo-luna',
+          nombre: 'Luna',
+          especie: 'Perro',
+          edad: '4 años',
+          notas: 'Vacunas al día · Próximo control en agosto',
+          vacunasAlDia: true,
+          proximoControl: '2026-08-18',
+          foto: 'assets/images/hero-dog.png',
+          createdAt: now - 86400000,
+          syncStatus: 'synced'
+        }
+      ]));
+    }
+    if (!localStorage.getItem(`kuichi_ofertas_${this.demoUserId}`)) {
+      localStorage.setItem(`kuichi_ofertas_${this.demoUserId}`, JSON.stringify([
+        { id: 'demo-1', titulo: '20% en vacunas', descripcion: 'Beneficio válido durante este mes para perros y gatos.', proveedor: 'Clínica Huellitas', whatsapp: '56955550101', createdAt: now },
+        { id: 'demo-2', titulo: 'Evaluación dental sin costo', descripcion: 'Incluye revisión preventiva y recomendaciones de cuidado.', proveedor: 'VetCare Ñuñoa', whatsapp: '56955550102', createdAt: now - 86400000 },
+        { id: 'demo-3', titulo: 'Consulta de urgencia', descripcion: 'Atención 24/7 con precio preferente para usuarios Kuichi.', proveedor: 'Urgencias Animal 24/7', whatsapp: '56955550103', createdAt: now - 172800000 }
+      ]));
+    }
+    this._isDemo.next(true);
   }
 
   /**
@@ -50,6 +91,9 @@ export class AuthService {
    * Obtiene el rol del usuario actual
    */
   public getCurrentUserRole(): Observable<UserRole | null> {
+    if (this._isDemo.value) {
+      return new BehaviorSubject<UserRole>('user').asObservable();
+    }
     return this.authState$.pipe(
       switchMap(user => {
         if (!user) return new Observable<UserRole | null>(observer => {
@@ -74,7 +118,7 @@ export class AuthService {
    * Obtiene el ID del usuario actual o null si no hay sesión
    */
   public getCurrentUserId(): string | null {
-    return this.auth.currentUser?.uid || null;
+    return this._isDemo.value ? this.demoUserId : (this.auth.currentUser?.uid || null);
   }
 
   /**
@@ -165,7 +209,11 @@ export class AuthService {
    */
   async logout(): Promise<void> {
     try {
-      await signOut(this.auth);
+      localStorage.removeItem(this.demoSessionKey);
+      this._isDemo.next(false);
+      if (this.auth.currentUser) {
+        await signOut(this.auth);
+      }
       // El subscription actualizará _isAuthenticated automáticamente
     } catch (error) {
       console.error('Error en logout:', error);

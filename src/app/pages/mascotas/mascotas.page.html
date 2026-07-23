@@ -1,17 +1,17 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button routerLink="/" fill="clear">
+      <ion-button routerLink="/tabs/home" fill="clear">
         <ion-icon name="home" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
 
     <ion-title>
-      <img src="/assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
+      <img src="assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
     </ion-title>
 
     <ion-buttons slot="end" *ngIf="isAuth">
-      <ion-button routerLink="/ofertas" fill="clear">
+      <ion-button routerLink="/tabs/ofertas" fill="clear">
         <ion-icon name="pricetag" slot="icon-only"></ion-icon>
       </ion-button>
       <ion-button (click)="logout()" fill="clear">
@@ -70,6 +70,21 @@
             label="Notas" labelPlacement="floating" rows="3">
           </ion-textarea>
         </ion-item>
+
+        <div class="health-fields">
+          <ion-item lines="none" class="health-toggle">
+            <ion-toggle [(ngModel)]="form.vacunasAlDia" justify="space-between">
+              Vacunas al día
+            </ion-toggle>
+          </ion-item>
+
+          <ion-item lines="none" class="modern-input">
+            <ion-icon name="medical" slot="start" color="success"></ion-icon>
+            <ion-input [(ngModel)]="form.proximoControl" type="date" fill="outline"
+              label="Próximo control" labelPlacement="floating">
+            </ion-input>
+          </ion-item>
+        </div>
       </div>
 
       <!-- CÁMARA SECTION -->
@@ -153,6 +168,10 @@
 
     <div class="mascotas-grid">
       <ion-card *ngFor="let m of mascotas" class="mascota-card">
+        <div class="lost-banner" *ngIf="m.perdida">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          MASCOTA PERDIDA
+        </div>
         <div class="mascota-image">
           <img
             [src]="m.foto || 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=300&fit=crop&crop=center'"
@@ -185,6 +204,78 @@
             </ion-chip>
           </div>
           <p class="mascota-notas" *ngIf="m.notas">{{ m.notas }}</p>
+
+          <div class="health-summary">
+            <div class="health-item" [class.is-pending]="!m.vacunasAlDia">
+              <ion-icon [name]="m.vacunasAlDia ? 'checkmark-circle' : 'medical'"></ion-icon>
+              <span>{{ m.vacunasAlDia ? 'Vacunas al día' : 'Revisar vacunas' }}</span>
+            </div>
+            <div class="health-item" *ngIf="m.proximoControl">
+              <ion-icon name="time"></ion-icon>
+              <span>Próximo control: {{ m.proximoControl | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+          <div class="passport-actions">
+            <ion-button fill="outline" size="small" color="primary" (click)="togglePassport(m)">
+              <ion-icon name="qr-code-outline" slot="start"></ion-icon>
+              {{ expandedPassportId === m.id ? 'Ocultar ficha' : 'Pasaporte' }}
+            </ion-button>
+            <ion-button fill="outline" size="small" [color]="m.perdida ? 'success' : 'warning'"
+              (click)="toggleLostMode(m)">
+              <ion-icon [name]="m.perdida ? 'shield-checkmark-outline' : 'alert-circle-outline'" slot="start"></ion-icon>
+              {{ m.perdida ? 'Encontrada' : 'Reportar perdida' }}
+            </ion-button>
+          </div>
+
+          <section class="digital-passport" *ngIf="expandedPassportId === m.id">
+            <div class="passport-heading">
+              <div>
+                <span>PASAPORTE DIGITAL</span>
+                <h4>{{ m.nombre }}</h4>
+              </div>
+              <ion-icon name="paw"></ion-icon>
+            </div>
+
+            <div class="passport-body">
+              <img *ngIf="passportQr[m.id]" [src]="passportQr[m.id]" [alt]="'Código QR de ' + m.nombre">
+              <div class="passport-data">
+                <p><strong>ID</strong> KUICHI-{{ m.id | uppercase }}</p>
+                <p><strong>Especie</strong> {{ m.especie }}</p>
+                <p><strong>Salud</strong> {{ m.vacunasAlDia ? 'Vacunas al día' : 'Vacunas por revisar' }}</p>
+              </div>
+            </div>
+
+            <div class="health-timeline">
+              <h5>Línea de tiempo sanitaria</h5>
+              <div class="timeline-event completed">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                <div>
+                  <strong>Ficha creada</strong>
+                  <span>{{ m.createdAt | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+              <div class="timeline-event">
+                <ion-icon name="medical"></ion-icon>
+                <div>
+                  <strong>{{ m.vacunasAlDia ? 'Vacunación vigente' : 'Vacunación pendiente' }}</strong>
+                  <span>Estado informado por su responsable</span>
+                </div>
+              </div>
+              <div class="timeline-event upcoming" *ngIf="m.proximoControl">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <div>
+                  <strong>Próximo control</strong>
+                  <span>{{ m.proximoControl | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <ion-button expand="block" size="small" (click)="sharePassport(m)">
+              <ion-icon name="share-social-outline" slot="start"></ion-icon>
+              Compartir pasaporte
+            </ion-button>
+          </section>
         </ion-card-content>
       </ion-card>
     </div>

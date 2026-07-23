@@ -6,13 +6,15 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { StorageService } from '../../services/storage.service';
 import { addIcons } from 'ionicons';
-import { pricetag, gift, flash, call, addCircle, documentText, add, trash, home, paw, logOut, create, close, checkmark } from 'ionicons/icons';
+import { pricetag, gift, flash, logoWhatsapp, addCircle, documentText, add, trash, home, paw, logOut, create, close, checkmark } from 'ionicons/icons';
 import { Observable } from 'rxjs';
 
 export interface Oferta {
   id: string;
   titulo: string;
   descripcion: string;
+  proveedor: string;
+  whatsapp: string;
   createdAt: number;
 }
 
@@ -53,7 +55,7 @@ export class OfertasPage {
     @Inject(AuthService) private auth: AuthService,
     private storage: StorageService
   ) {
-    addIcons({ pricetag, gift, flash, call, addCircle, documentText, add, trash, home, paw, logOut, create, close, checkmark });
+    addIcons({ pricetag, gift, flash, logoWhatsapp, addCircle, documentText, add, trash, home, paw, logOut, create, close, checkmark });
     this.isAdmin$ = this.auth.isAdmin();
     this.loadOfertas();
   }
@@ -69,7 +71,11 @@ export class OfertasPage {
     const stored = this.storage.get<Oferta[]>(key);
 
     if (stored && stored.length > 0) {
-      this.ofertas = stored;
+      this.ofertas = stored.map((oferta, index) => ({
+        ...oferta,
+        proveedor: oferta.proveedor || 'Centro veterinario asociado',
+        whatsapp: oferta.whatsapp || `5695555010${index + 1}`
+      }));
     } else {
       // Ofertas por defecto solo la primera vez
       this.ofertas = [
@@ -77,18 +83,24 @@ export class OfertasPage {
           id: '1',
           titulo: 'Descuento en Vacunas 💉',
           descripcion: '20% de descuento en todas las vacunas durante este mes. Válido para perros y gatos.',
+          proveedor: 'Clínica Huellitas',
+          whatsapp: '56955550101',
           createdAt: Date.now() - 86400000
         },
         {
           id: '2',
           titulo: 'Control Dental Gratuito 🦷',
           descripcion: 'Revisión dental completa sin costo. Incluye limpieza básica y diagnóstico.',
+          proveedor: 'VetCare Ñuñoa',
+          whatsapp: '56955550102',
           createdAt: Date.now() - 172800000
         },
         {
           id: '3',
           titulo: 'Consulta de Emergencia 🚨',
           descripcion: 'Atención veterinaria de emergencia 24/7 con 15% de descuento.',
+          proveedor: 'Urgencias Animal 24/7',
+          whatsapp: '56955550103',
           createdAt: Date.now() - 259200000
         }
       ];
@@ -129,6 +141,8 @@ export class OfertasPage {
         id: Date.now().toString(),
         titulo: this.nuevaOferta.titulo,
         descripcion: this.nuevaOferta.descripcion,
+        proveedor: 'Centro veterinario Kuichi',
+        whatsapp: '56955550100',
         createdAt: Date.now()
       };
       this.ofertas.unshift(nuevaOferta);
@@ -186,6 +200,13 @@ export class OfertasPage {
 
   getOfertaIcon(index: number): string {
     return this.ofertaIcons[index % this.ofertaIcons.length];
+  }
+
+  contactar(oferta: Oferta) {
+    const mensaje = encodeURIComponent(
+      `Hola, vi la oferta "${oferta.titulo}" en Kuichi y quisiera conocer más detalles.`
+    );
+    window.open(`https://wa.me/${oferta.whatsapp}?text=${mensaje}`, '_blank', 'noopener,noreferrer');
   }
 
   scrollToForm() {

@@ -2,18 +2,18 @@
   <ion-toolbar color="primary">
 
     <ion-title>
-      <img src="/assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
+      <img src="assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
     </ion-title>
 
     <ion-buttons slot="end">
 
       <ng-container *ngIf="isLoggedIn">
 
-        <ion-button (click)="navigateTo('/mascotas')" title="Mis Mascotas">
+        <ion-button (click)="navigateToTab('mascotas')" title="Mis Mascotas">
           <ion-icon name="paw" slot="icon-only" class="nav-icon"></ion-icon>
         </ion-button>
 
-        <ion-button (click)="navigateTo('/veterinarias')" title="Veterinarias">
+        <ion-button (click)="navigateToTab('veterinarias')" title="Veterinarias">
           <ion-icon name="pin" slot="icon-only" class="nav-icon"></ion-icon>
         </ion-button>
 
@@ -142,6 +142,11 @@
           </ion-col>
         </ion-row>
       </ion-grid>
+
+      <p class="creator-credit">
+        Creado por
+        <a href="https://github.com/AelStGermain" target="_blank" rel="noopener noreferrer">Sofía Gómez</a>
+      </p>
     </div>
 
   </div>
