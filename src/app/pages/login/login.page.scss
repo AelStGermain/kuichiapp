@@ -124,23 +124,6 @@ ion-content {
   }
 }
 
-.creator-credit {
-  margin: 20px 0 0;
-  color: #78847b;
-  font-size: .78rem;
-
-  a {
-    color: #357a49;
-    font-weight: 700;
-    text-decoration: none;
-
-    &:hover,
-    &:focus-visible {
-      text-decoration: underline;
-    }
-  }
-}
-
 @media (max-height: 720px) {
   .brand-section {
     margin-bottom: 12px;
