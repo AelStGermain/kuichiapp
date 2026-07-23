@@ -109,7 +109,14 @@ export class MascotasPage {
     const key = `kuichi_mascotas_${uid}`;
     const stored = this.storage.get<Mascota[]>(key);
     if (stored) {
-      this.mascotas = stored;
+      this.mascotas = stored.map(mascota => ({
+        ...mascota,
+        foto: mascota.id === 'demo-luna' &&
+          (!mascota.foto || mascota.foto.includes('hero-dog.png'))
+          ? 'assets/images/luna-profile.jpg'
+          : mascota.foto
+      }));
+      this.saveStore();
       return;
     }
 
@@ -122,7 +129,7 @@ export class MascotasPage {
         notas: 'Vacunas al día · Próximo control en agosto',
         vacunasAlDia: true,
         proximoControl: '2026-08-18',
-        foto: 'assets/images/hero-dog.png',
+        foto: 'assets/images/luna-profile.jpg',
         createdAt: Date.now() - 86400000,
         syncStatus: 'synced'
       }

@@ -64,7 +64,7 @@ export class AuthService {
           notas: 'Vacunas al día · Próximo control en agosto',
           vacunasAlDia: true,
           proximoControl: '2026-08-18',
-          foto: 'assets/images/hero-dog.png',
+          foto: 'assets/images/luna-profile.jpg',
           createdAt: now - 86400000,
           syncStatus: 'synced'
         }

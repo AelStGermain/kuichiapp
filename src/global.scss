@@ -120,3 +120,14 @@ ion-card {
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
+@media (min-width: 720px) {
+  html,
+  body {
+    min-height: 100%;
+    background:
+      radial-gradient(circle at 25% 20%, rgba(102, 187, 106, .14), transparent 34%),
+      radial-gradient(circle at 80% 75%, rgba(47, 125, 74, .1), transparent 30%),
+      #edf2ee;
+  }
+}

@@ -1,66 +1,76 @@
-/* === REGLAS GLOBALES Y DE ESPACIADO === */
-
-ion-toolbar[role="toolbar"] {
-  --ion-safe-area-top: 0px;
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-/* icon label visible en pantallas grandes si quisieras mostrar texto */
-@media (min-width: 768px) {
-  ion-button[title]::after {
-    content: attr(title);
-    font-size: 12px;
-    margin-left: 6px;
-    color: white;
+.device-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+.device-speaker {
+  display: none;
+}
+
+ion-app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 720px) {
+  :host {
+    display: grid;
+    place-items: center;
+    min-height: 100dvh;
+    padding: 24px;
   }
-}
 
-/* === VARIABLES DE COLOR OLDSCHOOL (Añadidas para Consistencia) === */
-:root {
-  --oldschool-dark: #333333;
-  --oldschool-light: #ffffff;
-}
+  .device-shell {
+    width: 430px;
+    height: min(890px, calc(100dvh - 48px));
+    padding: 11px;
+    border: 1px solid #30353a;
+    border-radius: 46px;
+    background: #111418;
+    box-shadow:
+      0 32px 80px rgba(17, 30, 22, .24),
+      0 10px 24px rgba(17, 30, 22, .14),
+      inset 0 0 0 1px rgba(255, 255, 255, .12);
+  }
 
-/* === ENCABEZADO Y NAVBAR (ESTILO OLDSCHOOL) === */
-ion-toolbar {
-    // Estilo de alto contraste y plano (Borde duro)
-    border-bottom: 3px solid var(--oldschool-dark); 
-    box-shadow: none !important;
-    --min-height: 56px; 
-}
+  .device-shell::after {
+    content: '';
+    position: absolute;
+    top: 112px;
+    right: -4px;
+    width: 4px;
+    height: 72px;
+    border-radius: 0 3px 3px 0;
+    background: #30353a;
+  }
 
-.navbar-logo {
-    height: 36px;
-    // Hace el logo blanco y plano (Necesario si el logo tiene colores oscuros)
-    filter: brightness(0) invert(1) !important; 
-    margin: 0 auto;
-}
+  .device-speaker {
+    display: block;
+    position: absolute;
+    z-index: 10000;
+    top: 17px;
+    left: 50%;
+    width: 76px;
+    height: 20px;
+    border-radius: 12px;
+    background: #090b0d;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
 
-/* 💥 SOLUCIÓN DEFINITIVA DE VISIBILIDAD DE ICONOS */
-// Apunta a todos los íconos dentro del slot="end" en la toolbar para máxima especificidad.
-ion-toolbar ion-buttons[slot="end"] ion-icon {
-    // 1. Color Blanco Puro (Alto Contraste)
-    color: #FFFFFF !important; 
-    
-    // 2. Tamaño Visible
-    font-size: 26px !important; 
-    
-    // 3. Sobreescribimos cualquier variable interna de Ionic
-    --ionicon-color: #FFFFFF !important;
-}
-
-// Estilos para los íconos que usan las clases nav-icon/logout-icon
-.nav-icon,
-.logout-icon {
-    color: #FFFFFF;
-    font-size: 26px;
-    transition: none; 
-}
-
-ion-toolbar ion-buttons ion-button {
-    --background: transparent;
-    // Efecto de botón presionado de los 90s (sutil)
-    &:active {
-      border: 1px solid var(--oldschool-light);
-      background: rgba(255, 255, 255, 0.1);
-    }
+  ion-app {
+    overflow: hidden;
+    border-radius: 35px;
+    background: var(--ion-background-color, #f5f5f5);
+  }
 }
