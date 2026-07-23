@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard,
-  IonCardHeader, IonCardTitle, IonCardContent, IonButtons, IonBackButton,
+  IonCardHeader, IonCardTitle, IonCardContent, IonButtons,
   IonSpinner, IonIcon, IonLabel, IonChip, IonButton, IonFab, IonFabButton,
   IonModal, IonInput, IonSelect, IonSelectOption, IonItem,
   ToastController, AlertController
@@ -24,7 +24,7 @@ import { Observable } from 'rxjs';
   imports: [
     IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule,
     IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButtons,
-    IonBackButton, IonSpinner, IonIcon, IonLabel, IonChip, IonButton, IonFab,
+    IonSpinner, IonIcon, IonLabel, IonChip, IonButton, IonFab,
     IonFabButton, IonModal, IonInput, IonSelect, IonSelectOption, IonItem,
     SanitizePipe
   ]

@@ -696,3 +696,63 @@ ion-fab-button {
     grid-template-columns: 1fr;
   }
 }
+
+/* El contenido vive siempre dentro del ancho del teléfono simulado. */
+.mascotas-section {
+  padding: 10px 10px 84px;
+}
+
+.mascotas-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 11px;
+}
+
+.mascota-card {
+  margin: 0;
+}
+
+.mascota-image {
+  height: 190px;
+}
+
+.form-card,
+.sync-status-card {
+  margin: 10px;
+}
+
+.form-content {
+  padding: 14px;
+}
+
+.sync-status-content {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 13px;
+}
+
+.sync-status-info {
+  min-width: 0;
+}
+
+.sync-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+
+  ion-button {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+.veterinarias-section {
+  display: none;
+}
+
+.passport-actions {
+  grid-template-columns: 1fr;
+}
+
+.digital-passport {
+  padding: 13px;
+}

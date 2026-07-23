@@ -1,294 +1,220 @@
-// src/app/home/home.page.scss
-
-/* === RESET Y TONOS OLDSCHOOL === */
-:root {
-    // Los colores primarios son demasiado vibrantes. Usaremos azules y grises más planos.
-    // --kuichi-primary: #3880ff; -> Usaremos un color más sobrio para el navbar
-    --oldschool-dark: #333333; // Color oscuro para fondo de botones o texto
-    --oldschool-light: #ffffff; // Blanco puro
-    --oldschool-accent: #007bff; // Un azul plano y clásico (como un enlace)
-    --oldschool-border: #cccccc; // Gris claro para bordes
-}
-
-// 🎯 CAMBIO MAYOR: Navbar con estilo plano y definido
 ion-toolbar {
-    // Adiós al degradado del primary. Usamos un color sólido.
-    --background: var(--kuichi-primary, #3880ff) !important;
-
-    // Altura fija, más robusta
-    --min-height: 56px;
-
-    // Sin esquinas redondeadas en el header (por defecto Ionic lo hace, pero lo aseguramos)
-    border-bottom: 2px solid var(--oldschool-dark); // Borde grueso y oscuro
+  --background: #fff;
+  --color: #193c26;
+  --min-height: 58px;
+  --border-color: #e8eee9;
 }
 
 .navbar-logo {
-    height: 36px;
-    filter: brightness(0) invert(1); // Filtro para hacer el logo BLANCO y plano contra el fondo oscuro.
+  display: block;
+  width: 92px;
+  height: auto;
 }
 
-/* === ESTILO DE BOTONES Y ICONOS EN EL NAVBAR === */
-
-// Los botones de Ionic son transparentes por defecto, vamos a darles cuerpo.
-ion-button {
-    // 💡 Oldschool Look: Alto Contraste y bordes
-    --padding-start: 10px;
-    --padding-end: 10px;
-
-    // El color de fondo es el color de la toolbar, para que se integren.
-    --background: transparent;
-
-    // Borde sutil, no totalmente plano
-    border: 1px solid transparent;
-
-    // Efecto hover/active como si se hundiera el botón
-    &:active {
-        border-color: var(--oldschool-dark);
-        opacity: 0.8;
-    }
-}
-
-// Estilo de los iconos (los hacemos visibles y grandes)
-.nav-icon,
-.logout-icon {
-    font-size: 26px; // Un poco más grandes para presencia
-    color: var(--oldschool-light); // Color BLANCO PURO para alto contraste
-    transition: none; // Eliminamos transiciones suaves
-}
-
-
-/* === AJUSTES DE FUENTE CLÁSICOS (Opcional) === */
-ion-title {
-    // Fuente más simple para el toque vintage
-    font-family: monospace, sans-serif;
-    font-weight: 700;
-}
-
-/* === ESTILOS DEL DASHBOARD === */
 .home-content {
-    --background: transparent;
-    background-image: url('../../assets/images/home-bg.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.95) 100%);
-        z-index: 0;
-    }
+  --background: #f4f7f4;
 }
 
 .dashboard-container {
-    padding: 0;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
+  width: 100%;
+  padding: 14px 14px calc(88px + env(safe-area-inset-bottom));
 }
 
-/* Hero Section */
-.hero-section {
-    background: linear-gradient(135deg, rgba(102, 187, 106, 0.95) 0%, rgba(129, 199, 132, 0.95) 100%);
-    padding: 50px 20px;
-    color: white;
-    text-align: center;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 20px rgba(102, 187, 106, 0.4);
-    backdrop-filter: blur(10px);
+.welcome-card {
+  padding: 23px 21px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255, 255, 255, .22), transparent 26%),
+    linear-gradient(145deg, #2f7d4a, #56a36d);
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(47, 125, 74, .2);
 
-    .hero-content {
-        h1 {
-            font-size: 36px;
-            margin: 0 0 15px 0;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+  .eyebrow {
+    font-size: .65rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+    opacity: .82;
+  }
 
-        .hero-subtitle {
-            font-size: 20px;
-            margin: 0 0 35px 0;
-            opacity: 0.95;
-            font-weight: 500;
-        }
+  h1 {
+    margin: 8px 0 7px;
+    font-size: 1.65rem;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+  }
 
-        .hero-features {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            max-width: 450px;
-            margin: 0 auto;
-
-            .feature-item {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                text-align: left;
-                background: rgba(255, 255, 255, 0.15);
-                padding: 12px 20px;
-                border-radius: 12px;
-                backdrop-filter: blur(5px);
-
-                ion-icon {
-                    font-size: 28px;
-                    flex-shrink: 0;
-                }
-
-                span {
-                    font-size: 16px;
-                    font-weight: 500;
-                }
-            }
-        }
-    }
+  p {
+    max-width: 290px;
+    margin: 0;
+    font-size: .87rem;
+    line-height: 1.45;
+    opacity: .88;
+  }
 }
 
-.stats-grid {
-    margin-bottom: 30px;
-    padding: 0 16px;
-}
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0 24px;
 
-.stat-card {
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-
-    ion-card-content {
-        padding: 30px 20px;
-
-        ion-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-
-        h2 {
-            font-size: 36px;
-            font-weight: bold;
-            margin: 10px 0;
-            color: #333;
-        }
-
-        p {
-            font-size: 14px;
-            color: #666;
-            margin: 0;
-        }
-    }
-}
-
-.quick-access-section {
-    padding: 0 16px 100px 16px;
-
-    h2 {
-        font-size: 26px;
-        margin-bottom: 25px;
-        color: #333;
-        font-weight: bold;
-        text-align: center;
-    }
-}
-
-.feature-card {
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 16px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-
-    &:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-
-    .card-image {
-        background: linear-gradient(135deg, #66BB6A 0%, #81C784 100%);
-        padding: 35px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &.veterinarias {
-            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
-        }
-
-        &.ofertas {
-            background: linear-gradient(135deg, #81C784 0%, #A5D6A7 100%);
-        }
-
-        ion-icon {
-            font-size: 72px;
-            color: white;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-        }
-    }
-
-    ion-card-header {
-        padding: 20px 20px 10px 20px;
-
-        ion-card-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
-        }
-    }
-
-    ion-card-content {
-        padding: 0 20px 20px 20px;
-        font-size: 15px;
-        color: #666;
-        line-height: 1.6;
-    }
-}
-
-.not-logged-in {
+  article {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    min-height: 80vh;
-    padding: 20px;
-    position: relative;
-    z-index: 1;
+    min-width: 0;
+    padding: 13px 5px 11px;
+    border: 1px solid #e5ebe6;
+    border-radius: 16px;
+    background: #fff;
+  }
 
-    .login-hero {
-        text-align: center;
-        max-width: 400px;
-        background: rgba(255, 255, 255, 0.95);
-        padding: 40px 30px;
-        border-radius: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
+  ion-icon {
+    color: #4b9160 !important;
+    font-size: 20px !important;
+  }
 
-        h1 {
-            font-size: 52px;
-            margin-bottom: 15px;
-            color: #66BB6A;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+  strong {
+    margin-top: 4px;
+    color: #1d3926;
+    font-size: 1.25rem;
+  }
 
-        p {
-            font-size: 19px;
-            color: #666;
-            margin-bottom: 35px;
-            line-height: 1.5;
-        }
+  span {
+    width: 100%;
+    overflow: hidden;
+    color: #78827b;
+    font-size: .64rem;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
 
-        ion-button {
-            --background: linear-gradient(135deg, #66BB6A 0%, #81C784 100%);
-            --border-radius: 12px;
-            --box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
-            font-size: 17px;
-            font-weight: bold;
-            height: 50px;
-        }
+.section-heading {
+  margin: 0 3px 12px;
+
+  span {
+    color: #579169;
+    font-size: .62rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+  }
+
+  h2 {
+    margin: 4px 0 0;
+    color: #1b3323;
+    font-size: 1.27rem;
+    letter-spacing: -.025em;
+  }
+}
+
+.action-card {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 18px;
+  gap: 13px;
+  align-items: center;
+  min-height: 78px;
+  margin: 0 0 9px;
+  padding: 12px;
+  border: 1px solid #e4eae5;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(31, 58, 39, .06);
+}
+
+.action-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  background: #e8f5eb;
+
+  ion-icon {
+    color: #347c49 !important;
+    font-size: 25px !important;
+  }
+
+  &.veterinarias {
+    background: #edf4fa;
+
+    ion-icon {
+      color: #49789b !important;
     }
+  }
+
+  &.ofertas {
+    background: #fff4df;
+
+    ion-icon {
+      color: #b97719 !important;
+    }
+  }
+}
+
+.action-copy {
+  min-width: 0;
+
+  h3 {
+    margin: 0 0 3px;
+    color: #203728;
+    font-size: .96rem;
+  }
+
+  p {
+    margin: 0;
+    color: #768078;
+    font-size: .74rem;
+    line-height: 1.35;
+  }
+}
+
+.action-arrow {
+  color: #8d9890;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.daily-tip {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 17px;
+  background: #edf4ee;
+
+  img {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    object-fit: cover;
+  }
+
+  span,
+  strong,
+  p {
+    display: block;
+  }
+
+  span {
+    color: #5c8d69;
+    font-size: .58rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+  }
+
+  strong {
+    margin: 3px 0;
+    color: #243b2b;
+    font-size: .85rem;
+  }
+
+  p {
+    margin: 0;
+    color: #718077;
+    font-size: .7rem;
+  }
 }

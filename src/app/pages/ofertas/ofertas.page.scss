@@ -302,3 +302,79 @@ ion-fab-button {
     height: 100px;
   }
 }
+
+/* La página siempre se presenta dentro de un viewport móvil. */
+.hero-section {
+  height: 128px;
+}
+
+.hero-content h1 {
+  margin: 0 0 5px;
+  font-size: 1.32rem;
+}
+
+.hero-content p {
+  margin: 0;
+  font-size: .78rem;
+}
+
+.ofertas-section,
+.add-offer-section {
+  padding: 12px;
+}
+
+.section-header {
+  margin-bottom: 13px;
+
+  h2 {
+    font-size: 1.05rem;
+  }
+}
+
+.ofertas-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 11px;
+  margin-bottom: 76px;
+}
+
+.oferta-card {
+  border-radius: 17px;
+}
+
+.oferta-card ion-card-content {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  column-gap: 13px;
+  padding: 12px 14px 14px;
+  text-align: left;
+}
+
+.oferta-icon {
+  grid-row: 1 / 5;
+  margin: 0;
+
+  img {
+    width: 62px;
+    height: 62px;
+  }
+}
+
+.oferta-titulo,
+.oferta-proveedor,
+.oferta-descripcion,
+.oferta-actions {
+  grid-column: 2;
+}
+
+.oferta-titulo {
+  font-size: .98rem;
+}
+
+.oferta-descripcion {
+  margin-bottom: 10px;
+  font-size: .76rem;
+}
+
+.oferta-actions {
+  margin-top: 3px;
+}

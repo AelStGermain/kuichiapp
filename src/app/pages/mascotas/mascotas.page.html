@@ -1,20 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/tabs/home" fill="clear">
-        <ion-icon name="home" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
-    <ion-title>
-      <img src="assets/images/kuichi_logo.png" alt="Kuichi" class="navbar-logo">
-    </ion-title>
+    <ion-title>Mis mascotas</ion-title>
 
     <ion-buttons slot="end" *ngIf="isAuth">
-      <ion-button routerLink="/tabs/ofertas" fill="clear">
-        <ion-icon name="pricetag" slot="icon-only"></ion-icon>
-      </ion-button>
-      <ion-button (click)="logout()" fill="clear">
+      <ion-button (click)="logout()" fill="clear" aria-label="Cerrar sesión">
         <ion-icon name="log-out" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>

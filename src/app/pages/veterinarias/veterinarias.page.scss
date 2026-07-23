@@ -144,3 +144,73 @@ ion-modal {
     }
   }
 }
+
+/* Layout móvil estable incluso dentro del simulador de dispositivo. */
+.map-container {
+  padding: 12px;
+  margin-bottom: 12px;
+
+  h3 {
+    margin-bottom: 10px;
+    font-size: .95rem;
+  }
+
+  iframe {
+    height: 170px !important;
+  }
+}
+
+.card-list {
+  padding: 0 10px 82px;
+  background: transparent;
+}
+
+.veterinaria-card {
+  margin: 0 0 11px;
+
+  ion-card-header {
+    padding: 14px 15px;
+
+    ion-card-title {
+      font-size: 1rem;
+    }
+  }
+
+  ion-card-content {
+    padding: 13px 15px;
+  }
+}
+
+.info-item {
+  gap: 9px;
+  margin-bottom: 9px;
+
+  ion-label {
+    font-size: .78rem;
+  }
+}
+
+.specialties {
+  gap: 4px;
+  margin: 10px 0;
+
+  ion-chip {
+    height: 26px;
+    margin: 0;
+    font-size: .68rem;
+  }
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 12px;
+
+  ion-button {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    font-size: .72rem;
+  }
+}

@@ -15,12 +15,6 @@ import {
 
   // Componentes del Cuerpo (Mantengo para evitar errores si el HTML los usa)
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol,
 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -51,12 +45,6 @@ import { AuthService } from '../services/auth.service';
 
     // Imports del Dashboard
     IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonGrid,
-    IonRow,
-    IonCol,
   ],
 })
 export class HomePage implements OnInit {
